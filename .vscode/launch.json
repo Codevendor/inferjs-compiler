@@ -1,0 +1,39 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "DEBUG: Test Parse File",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/bin/main.mjs",
+            "args": [
+                "-q",
+                " -f ",
+                "./tests/test-comments1.mjs",
+                "./tests/test-comments2.mjs",
+                /*"--output-options-flag='w+'",*/
+                /*"--output=./tests/inferobjects/test-comments1.io.mjs"*/
+            ],
+            "env" : { "NODE_ENV" : "production" },
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "DEBUG: Test Parse File2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "InferJSCompiler",
+            "args": [
+                "-f --input-file=./tests/test-comments1.mjs",
+                "--output-file=./tests/inferobjects/test-comments1.io.mjs"
+            ]
+        }
+    ]
+}

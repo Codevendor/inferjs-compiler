@@ -48,7 +48,10 @@ export class logger {
     /** Returns the session. */
     get session() { return this.#session; }
 
-    constructor(verbose = false, format = '') {
+    get verbose() { return this.#verbose; }
+    set verbose(value) { this.#verbose = value; }
+
+    constructor(verbose = true, format = '') {
 
         this.#session = [];
         this.#verbose = verbose;
@@ -215,6 +218,9 @@ export class logger {
 
         // Add to session
         this.#session.push({ method: method.name, message: message });
+
+        // Check if quiet mode
+        if(!this.#verbose) return;
 
         // Call internal method to display message.
         method(...message);

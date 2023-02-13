@@ -25,7 +25,9 @@ export {
 
 // Helper methods
 export { buildInferObject } from "./build-infer-object.mjs";
+export { fileExists } from "./file-exists.mjs";
 export { getLineNumber } from "./get-line-number.mjs";
+export { jsonLoader } from "./json-loader.mjs";
 export { lstat } from "./lstat.mjs";
 export { parseArgv } from "./parse-argv.mjs";
 export { readDir } from "./read-dir.mjs";

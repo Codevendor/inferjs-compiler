@@ -1,14 +1,16 @@
+#! /usr/bin/env node
+
 // Imports
-import { parseArgv } from "../src/helpers/helpers.mjs";
+import { parseArgv, readFile, fileExists, jsonLoader } from "../src/helpers/helpers.mjs";
 import { InferJSCompiler } from "../src/core/inferjs-compiler.mjs";
 import { logger } from "../src/core/logger.mjs";
-import { readFile } from "../src/helpers/helpers.mjs";
 import path from "node:path";
+await jsonLoader("./package.json", 'info');
 
 // Create a logger
-const log = new logger(true, "\n");
+global.log = new logger(true, "");
 
-async function main(argv) {
+export async function main(argv) {
 
     // Compiler requires more than 1 parameter
     if (argv.length < 3) {
@@ -18,24 +20,51 @@ async function main(argv) {
 
     // Create a shorthand list
     const shortList = {
-        f: { name: 'action', value: 'parse-file' },
+        f: { name: 'action', value: 'parse-files' },
         d: { name: 'action', value: 'parse-dir' },
-        a: { name: 'action', value: 'parse-list' },
         l: { name: 'action', value: 'parse-file-list' },
+        v: 'version',
+        q: 'quiet',
         h: 'help'
     };
 
     // Separate arguments
     const args = parseArgv(argv, shortList);
 
+    if(args.hasOwnProperty('quiet')) {
+        log.verbose = false;
+    }
+
+    //console.log(argv);
+
+
+
     try {
+
+        // Declare variables
+        let input, inputOptions, output, outputOptions, ic, results;
+
+        // Check if version
+        if(args.hasOwnProperty('version')) {
+
+            console.log(info.version);
+            process.exit();
+
+        }
 
         // Check if help
         if (args.hasOwnProperty('help')) {
 
-            const helpFile = (args.hasOwnProperty('lang')) ? `help-${args['lang']}.txt` : `help-en.txt`;
-            const helpFilePath = path.normalize(path.resolve(`../localization/${helpFile}`));
-            const results = await readFile(helpFilePath, 'utf8');
+            let helpFile = (process.env.hasOwnProperty('LANGUAGE')) ? `help-${process.env['LANGUAGE']}.txt` : `help-en_us.txt`;
+            let helpFilePath = path.normalize(path.resolve(`localization/${helpFile}`));
+
+            const exists = await fileExists(helpFilePath);
+            if(!exists) {
+                helpFile = `help-en_us.txt`;
+                helpFilePath = path.normalize(path.resolve(`localization/${helpFile}`));
+            }
+            
+            results = await readFile(helpFilePath, 'utf8');
 
             if (results.err) throw (results.err);
 
@@ -43,40 +72,36 @@ async function main(argv) {
             process.exit(0);
         }
 
-        // Declare variables
-        let input, inputOptions, output, outputOptions, ic, results;
-
         if (!args.hasOwnProperty('action')) throw new Error(`Missing action command`);
 
         switch (args['action'].toLowerCase()) {
 
             // Parses a single js file
-            case 'parse-file':
+            case 'parse-files':
 
-                if (!args.hasOwnProperty('input-file')) throw new Error(`Missing required argument: <input-file> for parse-file`);
+                if (args['input'].length===0) throw new Error(`Missing required argument: <input> for parse-file`);
 
-                input = args['input-file'];
+                input = args['input'];
 
                 inputOptions = { encoding: 'utf8' };
-                if (args.hasOwnProperty('input-file-options-encoding')) inputOptions['encoding'] = args['input-file-options-encoding'];
+                if (args.hasOwnProperty('input-options-encoding')) inputOptions['encoding'] = args['input-options-encoding'];
 
                 outputOptions = { flag: "wx", module: "script" };
-                if (args.hasOwnProperty('output-file-options-flag')) outputOptions['flag'] = args['output-file-options-flag'];
-                if (args.hasOwnProperty('output-file-options-module')) outputOptions['module'] = args['output-file-options-module'];
+                if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
+                if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
-                output = args['output-file'];
-                if (!output || typeof output !== 'string' || output.trim() === '') {
+                if(args['output'].length > 0) {
 
-                    // Output to input file directory
-                    output = path.dirname(input) + '/output.mjs';
+                    output = args['output'][0];
+
                 }
 
                 // Get class
                 ic = new InferJSCompiler();
 
                 // Async Parse file 
-                results = await ic.parseFile(input, inputOptions, output, outputOptions).catch((err) => {
-                    throw new Error(`Processing action parse-file had internal error:\n${err}`);
+                results = await ic.parseList(input, inputOptions, output, outputOptions).catch((err) => {
+                    throw new Error(`Processing action parse-files had internal error:\n${err.message}`);
                 });
 
                 break;
@@ -93,8 +118,8 @@ async function main(argv) {
                 if (args.hasOwnProperty('input-dir-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-dir-options-allowedExtensions'];
 
                 outputOptions = { flag: "wx", module: "script" };
-                if (args.hasOwnProperty('output-file-options-flag')) outputOptions['flag'] = args['output-file-options-flag'];
-                if (args.hasOwnProperty('output-file-options-module')) outputOptions['module'] = args['output-file-options-module'];
+                if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
+                if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
                 output = args['output-file'];
                 if (!output || typeof output !== 'string' || output.trim() === '') {
@@ -137,8 +162,8 @@ async function main(argv) {
                 if (args.hasOwnProperty('input-list-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-list-options-allowedExtensions'];
 
                 outputOptions = { flag: "wx", module: "script" };
-                if (args.hasOwnProperty('output-file-options-flag')) outputOptions['flag'] = args['output-file-options-flag'];
-                if (args.hasOwnProperty('output-file-options-module')) outputOptions['module'] = args['output-file-options-module'];
+                if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
+                if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
                 output = args['output-file'];
                 if (!output || typeof output !== 'string' || output.trim() === '') {
@@ -170,8 +195,8 @@ async function main(argv) {
                 if (args.hasOwnProperty('input-file-list-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-file-list-options-allowedExtensions'];
 
                 outputOptions = { flag: "wx", module: "script" };
-                if (args.hasOwnProperty('output-file-options-flag')) outputOptions['flag'] = args['output-file-options-flag'];
-                if (args.hasOwnProperty('output-file-options-module')) outputOptions['module'] = args['output-file-options-module'];
+                if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
+                if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
                 output = args['output-file'];
                 if (!output || typeof output !== 'string' || output.trim() === '') {
@@ -197,7 +222,9 @@ async function main(argv) {
     } catch (err) {
 
         // Write the error to the console.
+        log.verbose = true;
         console.error()('INFERJS-COMPILER')(`${err.message}`);
+        process.exitCode = 1;
 
     }
 }

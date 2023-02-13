@@ -3,7 +3,11 @@
   "version": "0.0.2",
   "description": "A compiler that processes JSDoc comments into an InferObject File for utilizing with the InferJS Library.",
   "main": "bin/main.mjs",
+  "type": "module",
   "scripts": {
+    
+    "install": "node bin/install.mjs",
+    "uninstall": "node bin/uninstall.mjs",
     "clean": "node bin/clean.mjs",
     "build": "node bin/clean.mjs && node bin/build.mjs",
     "test": "node tests/test.mjs --test --no-warnings",
@@ -34,12 +38,11 @@
     "url": "https://github.com/Codevendor/inferjs-compiler.git"
   },
   "engines": {
-    "node": "~18.0.0",
-    "npm": "5.0.0"
+    "node": ">=8.0.0",
+    "npm": ">=5.0.0"
   },
   "os": [
-    "ubuntu",
-    "debian"
+    "linux"
   ],
   "cpu": [
     "x86",
@@ -47,6 +50,6 @@
   ],
 
   "bin": {
-    "InferJSCompiler": "./bin/main.mjs"
+    "InferJSCompiler": "bin/main.mjs"
   }
 }
