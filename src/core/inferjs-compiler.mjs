@@ -12,11 +12,12 @@ export class InferJSCompiler extends inferParser {
 
     /**
      * Constructor for the InferJSCompiler. 
+     * @param {object} args - The processed main arguments object.
      * @param {boolean} stat - Whether to calculate stats.
      */
-    constructor(stat = false) {
+    constructor(args = {}, stat = false) {
 
-        super(stat);
+        super(args, stat);
 
     }
 

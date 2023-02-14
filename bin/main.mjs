@@ -24,6 +24,7 @@ export async function main(argv) {
         d: { name: 'action', value: 'parse-dir' },
         l: { name: 'action', value: 'parse-file-list' },
         p: 'preview', // TODO: Preview files to process
+        s: 'stats', // TODO: Shows the stats
         v: 'version',
         q: 'quiet',
         h: 'help'
@@ -37,7 +38,7 @@ export async function main(argv) {
     }
 
     //console.log(argv);
-    
+
     try {
 
         // Declare variables
@@ -96,7 +97,7 @@ export async function main(argv) {
                 }
 
                 // Get class
-                ic = new InferJSCompiler();
+                ic = new InferJSCompiler(args);
 
                 // Async Parse file 
                 results = await ic.parseFiles(input, inputOptions, output, outputOptions).catch((err) => {
@@ -128,55 +129,11 @@ export async function main(argv) {
                 }
 
                 // Get class
-                ic = new InferJSCompiler();
+                ic = new InferJSCompiler(args);
 
                 // Async Parse file 
                 results = await ic.parseDirectory(input, inputOptions, output, outputOptions).catch((err) => {
                     throw new Error(`Processing action parse-dir had internal error:\n${err}`);
-                });
-
-                break;
-
-            // Parses an arrray list of file paths
-            case 'parse-list':
-
-                if (!args.hasOwnProperty('input-list')) throw new Error(`Missing required argument: <input-list> for parse-list`);
-
-                // Parse List
-                input = args['input-list'].split(',').map(item => {
-
-                    item = item.trim();
-
-                    if (item.startsWith('"') && item.endsWith('"')) return item.slice(1, -1).trim();
-                    if (item.startsWith('`') && item.endsWith('`')) return item.slice(1, -1).trim();
-                    if (item.startsWith("'") && item.endsWith("'")) return item.slice(1, -1).trim();
-                    if (item.startsWith("'")) return item.slice(1).trim();
-                    if (item.endsWith("'")) return item.slice(0, -1).trim();
-
-                    return item;
-                });
-
-                inputOptions = { encoding: 'utf8' };
-                if (args.hasOwnProperty('input-list-options-recursive')) inputOptions['recursive'] = args['input-list-options-recursive'];
-                if (args.hasOwnProperty('input-list-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-list-options-allowedExtensions'];
-
-                outputOptions = { flag: "wx", module: "script" };
-                if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
-                if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
-
-                output = args['output-file'];
-                if (!output || typeof output !== 'string' || output.trim() === '') {
-
-                    // Output to input file directory
-                    output = path.dirname(input) + '/output.mjs';
-                }
-
-                // Get class
-                ic = new InferJSCompiler();
-
-                // Async Parse file 
-                results = await ic.parseList(input, inputOptions, output, outputOptions).catch((err) => {
-                    throw new Error(`Processing action parse-list had internal error:\n${err}`);
                 });
 
                 break;
@@ -205,7 +162,7 @@ export async function main(argv) {
                 }
 
                 // Get class
-                ic = new InferJSCompiler();
+                ic = new InferJSCompiler(args);
 
                 // Async Parse file 
                 results = await ic.parseFileList(input, inputOptions, output, outputOptions).catch((err) => {

@@ -27,9 +27,19 @@ import {
 export class inferParser {
 
     // Private fields
+    #args = {};
     #stat = false;
     #stats = {};
     #source = null;
+
+    /** Gets the processed main arguments object. */
+    get args() { return this.#args; }
+
+    /** 
+     * Sets the processed main arguments object. 
+     * @param {object} value - The processed main arguments object.
+     */
+    set args(value) { this.#args = value; }
 
     /** Gets whether the parser is creating stats. */
     get stat() { return this.#stat; }
@@ -48,10 +58,12 @@ export class inferParser {
 
     /**
      * Constructor for the inferParser.
+     * @param {object} args - The processed main arguments object.
      * @param {boolean} stat - Whether to calculate stats.
      */
-    constructor(stat = false) {
+    constructor(args = {}, stat = false) {
 
+        this.args = args;
         this.#stat = stat;
         this.reset();
 
