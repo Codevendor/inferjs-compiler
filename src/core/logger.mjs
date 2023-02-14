@@ -1,31 +1,64 @@
 'use strict';
 
-// Color codes
-const RESET = "\x1b[0m";
-const BRIGHT = "\x1b[1m";
-const DIM = "\x1b[2m";
-const UNDERCORE = "\x1b[4m";
-const BLINK = "\x1b[5m";
-const REVERSE = "\x1b[7m";
-const HIDDEN = "\x1b[8m";
+import { type_of } from "../helpers/type-of.mjs";
 
-const FG_BLACK = "\x1b[30m";
-const FG_RED = "\x1b[31m";
-const FG_GREEN = "\x1b[32m";
-const FG_YELLOW = "\x1b[33m";
-const FG_BLUE = "\x1b[34m";
-const FG_MAGENTA = "\x1b[35m";
-const FG_CYAN = "\x1b[36m";
-const FG_WHITE = "\x1b[37m";
+/**
+ * For creating a colorObject.
+ */
+class colorObject {
 
-const BG_BLACK = "\x1b[40m";
-const BG_RED = "\x1b[41m";
-const BG_GREEN = "\x1b[42m";
-const BG_YELLOW = "\x1b[43m";
-const BG_BLUE = "\x1b[44m";
-const BG_MAGENTA = "\x1b[45m";
-const BG_CYAN = "\x1b[46m";
-const BG_WHITE = "\x1b[47m";
+    #color = '';
+
+    get name() { return this.constructor.name; }
+
+    constructor(color) { this.#color = color; }
+
+    toString() {
+        return this.#color;
+    }
+}
+
+/**
+ * Custom color objects.
+ */
+export const COLOR = {
+
+    BLACK: new colorObject("\x1b[30m"),
+    RED: new colorObject("\x1b[31m"),
+    GREEN: new colorObject("\x1b[32m"),
+    YELLOW: new colorObject("\x1b[33m"),
+    BLUE: new colorObject("\x1b[34m"),
+    MAGENTA: new colorObject("\x1b[35m"),
+    CYAN: new colorObject("\x1b[36m"),
+    WHITE: new colorObject("\x1b[37m"),
+
+    DEFAULT: new colorObject(''),
+    RESET: new colorObject("\x1b[0m"),
+    BRIGHT: new colorObject("\x1b[1m"),
+    DIM: new colorObject("\x1b[2m"),
+    UNDERCORE: new colorObject("\x1b[4m"),
+    BLINK: new colorObject("\x1b[5m"),
+    REVERSE: new colorObject("\x1b[7m"),
+    HIDDEN: new colorObject("\x1b[8m"),
+
+    FG_BLACK: new colorObject("\x1b[30m"),
+    FG_RED: new colorObject("\x1b[31m"),
+    FG_GREEN: new colorObject("\x1b[32m"),
+    FG_YELLOW: new colorObject("\x1b[33m"),
+    FG_BLUE: new colorObject("\x1b[34m"),
+    FG_MAGENTA: new colorObject("\x1b[35m"),
+    FG_CYAN: new colorObject("\x1b[36m"),
+    FG_WHITE: new colorObject("\x1b[37m"),
+
+    BG_BLACK: new colorObject("\x1b[40m"),
+    BG_RED: new colorObject("\x1b[41m"),
+    BG_GREEN: new colorObject("\x1b[42m"),
+    BG_YELLOW: new colorObject("\x1b[43m"),
+    BG_BLUE: new colorObject("\x1b[44m"),
+    BG_MAGENTA: new colorObject("\x1b[45m"),
+    BG_CYAN: new colorObject("\x1b[46m"),
+    BG_WHITE: new colorObject("\x1b[47m")
+};
 
 /**
  * Creates a custom colored terminal logger.
@@ -57,17 +90,17 @@ export class logger {
         this.#verbose = verbose;
         this.#format = format;
 
-        // Override console methods
-        this.#oldInfo = console.info;
+        // Backup original methods
         this.#oldLog = console.log;
+        this.#oldInfo = console.info;
         this.#oldWarn = console.warn;
         this.#oldError = console.error;
         this.#oldTrace = console.trace;
         this.#oldDebug = console.debug;
 
-        // Attach events
-        console.info = this.#info.bind(this);
+        // Attach new events
         console.log = this.#log.bind(this);
+        console.info = this.#info.bind(this);
         console.warn = this.#warn.bind(this);
         console.error = this.#error.bind(this);
         console.trace = this.#trace.bind(this);
@@ -75,40 +108,27 @@ export class logger {
 
         const self = this;
 
-        console.error = (...x) => {
-
-            if (x.length === 0) {
-                return (y) => {
-                    return (...z) => {
-                        self.#error(y, z);
-                    }
-                }
-            }
-
-            self.#oldError(...x);
-
-        };
-
+        // Log Curry
         console.log = (...x) => {
 
-            if (x.length === 0) {
-                return (y) => {
-                    return (...z) => {
-                        self.#log(y, z);
-                    }
+            if (x.length > 0 && type_of(x[0], true) === 'colorObject') {
+                return (...y) => {
+                    self.#log(x, y);
                 }
+
             }
 
             self.#oldLog(...x);
 
         };
 
+        // Log info
         console.info = (...x) => {
 
-            if (x.length === 0) {
+            if (x.length > 0 && type_of(x[0], true) === 'colorObject') {
                 return (y) => {
                     return (...z) => {
-                        self.#info(y, z);
+                        self.#info(x, y, z);
                     }
                 }
             }
@@ -117,12 +137,13 @@ export class logger {
 
         };
 
+        // Log warn
         console.warn = (...x) => {
 
-            if (x.length === 0) {
+            if (x.length > 0 && type_of(x[0], true) === 'colorObject') {
                 return (y) => {
                     return (...z) => {
-                        self.#warn(y, z);
+                        self.#warn(x, y, z);
                     }
                 }
             }
@@ -131,31 +152,48 @@ export class logger {
 
         };
 
-        console.debug = (...x) => {
+        // Log error
+        console.error = (...x) => {
 
-            if (x.length === 0) {
+            if (x.length > 0 && type_of(x[0], true) === 'colorObject') {
                 return (y) => {
                     return (...z) => {
-                        self.#debug(y, z);
+                        self.#error(x, y, z);
                     }
                 }
             }
 
-            self.#oldDebug(...x);
+            self.#oldError(...x);
 
         };
 
+        // Log trace
         console.trace = (...x) => {
 
-            if (x.length === 0) {
+            if (x.length > 0 && type_of(x[0], true) === 'colorObject') {
                 return (y) => {
                     return (...z) => {
-                        self.#trace(y, z);
+                        self.#trace(x, y, z);
                     }
                 }
             }
 
             self.#oldTrace(...x);
+
+        };
+
+        // Log debug
+        console.debug = (...x) => {
+
+            if (x.length > 0 && type_of(x[0], true) === 'colorObject') {
+                return (y) => {
+                    return (...z) => {
+                        self.#debug(x, y, z);
+                    }
+                }
+            }
+
+            self.#oldDebug(...x);
 
         };
 
@@ -184,7 +222,15 @@ export class logger {
 
     }
 
-    #profiler(logType, label, args) {
+    /**
+     * Adds a profiler object to show how long between console.log messages.
+     * @param {string} logType - The log type.
+     * @param {array} colors - The colors as an array. 
+     * @param {string} label - The label or color. 
+     * @param {*} args - The arguments to send through to spread parameters.
+     * @returns {object} - An object with profiler information.
+     */
+    #profiler(logType, colors, label, args) {
 
         const obj = {};
 
@@ -193,7 +239,8 @@ export class logger {
 
         // Set args
         obj.logType = logType;
-        obj.label = ` ${label} `;
+        obj.label = label;
+        obj.colors = colors;
 
         obj.args = args;
 
@@ -220,7 +267,7 @@ export class logger {
         this.#session.push({ method: method.name, message: message });
 
         // Check if quiet mode
-        if(!this.#verbose) return;
+        if (!this.#verbose) return;
 
         // Call internal method to display message.
         method(...message);
@@ -242,32 +289,57 @@ export class logger {
 
             case 'info':
 
-                this.#write(method, obj, ' ' + RESET + BG_CYAN + FG_BLACK + obj['label'] + RESET + FG_CYAN, ...obj.args, DIM + FG_WHITE + diff + RESET);
+                if (obj.colors.length === 1 && obj.colors[0].toString() === '') {
+                    this.#write(method, obj, ' ' + COLOR.RESET + COLOR.BG_CYAN + COLOR.FG_BLACK + ' ' + obj['label'] + ' ' + COLOR.RESET + COLOR.FG_CYAN, ...obj.args, COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                } else {
+                    this.#write(method, obj, ' ' + COLOR.RESET + COLOR.BG_CYAN + COLOR.FG_BLACK + ' ' + obj['label'] + ' ' + COLOR.RESET + obj.colors.join(''), ...obj.args, COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                }
+
                 break;
 
             case 'warn':
 
-                this.#write(method, obj, ' ' + RESET + BG_YELLOW + FG_BLACK + obj['label'] + RESET + FG_YELLOW, ...obj.args, DIM + FG_WHITE + diff + RESET);
+                this.#write(method, obj, ' ' + COLOR.RESET + COLOR.BG_YELLOW + COLOR.FG_BLACK + ' ' + obj['label'] + ' ' + COLOR.RESET + COLOR.FG_YELLOW, ...obj.args, COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
                 break;
 
             case 'error':
 
-                this.#write(method, obj, ' ' + RESET + BG_RED + FG_WHITE + obj['label'] + RESET + FG_RED, ...obj.args, RESET + DIM + FG_WHITE + diff + RESET);
+                if (obj.colors.length === 1 && obj.colors[0].toString() === '') {
+                    this.#write(method, obj, ' ' + COLOR.RESET + COLOR.BG_RED + COLOR.FG_WHITE + ' ' + obj['label'] + ' ' + COLOR.RESET + COLOR.FG_RED, ...obj.args, COLOR.RESET + COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                } else {
+                    this.#write(method, obj, ' ' + COLOR.RESET + COLOR.BG_RED + COLOR.FG_WHITE + ' ' + obj['label'] + ' ' + COLOR.RESET + obj.colors.join(''), ...obj.args, COLOR.RESET + COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                }
+
                 break;
 
             case 'trace':
 
-                this.#write(method, obj, ' ' + RESET + BG_RED + FG_WHITE + obj['label'] + RESET + FG_RED, ...obj.args, RESET + DIM + FG_WHITE + diff + RESET);
+                if (obj.colors.length === 1 && obj.colors[0].toString() === '') {
+                    this.#write(method, obj, ' ' + COLOR.RESET + COLOR.BG_RED + COLOR.FG_WHITE + ' ' + obj['label'] + ' ' + COLOR.RESET + COLOR.FG_RED, ...obj.args, COLOR.RESET + COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                } else {
+                    this.#write(method, obj, ' ' + COLOR.RESET + COLOR.BG_RED + COLOR.FG_WHITE + ' ' + obj['label'] + ' ' + COLOR.RESET + obj.colors.join(''), ...obj.args, COLOR.RESET + COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                }
+
                 break;
-            
+
             case 'debug':
 
-                this.#write(method, obj, ' ' + RESET + BG_MAGENTA + FG_WHITE + obj['label'] + RESET + FG_MAGENTA, ...obj.args, RESET + DIM + FG_WHITE + diff + RESET);
+                if (obj.colors.length === 1 && obj.colors[0].toString() === '') {
+                    this.#write(method, obj, ' ' + COLOR.RESET + COLOR.BG_MAGENTA + COLOR.FG_WHITE + ' ' + obj['label'] + ' ' + COLOR.RESET + COLOR.FG_MAGENTA, ...obj.args, COLOR.RESET + COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                } else {
+                    this.#write(method, obj, ' ' + COLOR.RESET + COLOR.BG_MAGENTA + COLOR.FG_WHITE + ' ' + obj['label'] + ' ' + COLOR.RESET + obj.colors.join(''), ...obj.args, COLOR.RESET + COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                }
+
                 break;
 
             case 'log':
 
-                this.#write(method, obj, RESET + FG_BLUE, ...obj.args, RESET + DIM + FG_WHITE + diff + RESET);
+                if (obj.colors.length === 1 && obj.colors[0].toString() === '') {
+                    this.#write(method, obj, COLOR.RESET + COLOR.FG_BLUE, ...obj.args, COLOR.RESET + COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                } else {
+                    this.#write(method, obj, COLOR.RESET + obj.colors.join(''), ...obj.args, COLOR.RESET + COLOR.DIM + COLOR.FG_WHITE + diff + COLOR.RESET);
+                }
+
                 break;
 
             default:
@@ -279,39 +351,39 @@ export class logger {
 
     }
 
-    /** Writes info to console if verbose is true. */
-    #info(label, args) {
-        const obj = this.#profiler('info', label, args);
-        this.#display(this.#oldInfo, obj);
-    }
-
     /** Writes log to console if verbose is true. */
-    #log(label, args) {
-        const obj = this.#profiler('log', label, args);
+    #log(colors, args) {
+        const obj = this.#profiler('log', colors, '', args);
         this.#display(this.#oldLog, obj);
     }
 
+    /** Writes info to console if verbose is true. */
+    #info(colors, label, args) {
+        const obj = this.#profiler('info', colors, label, args);
+        this.#display(this.#oldInfo, obj);
+    }
+
     /** Writes warn to console if verbose is true. */
-    #warn(label, args) {
-        const obj = this.#profiler('warn', label, args);
+    #warn(colors, label, args) {
+        const obj = this.#profiler('warn', colors, label, args);
         this.#display(this.#oldWarn, obj);
     }
 
     /** Writes error to console if verbose is true. */
-    #error(label, args) {
-        const obj = this.#profiler('error', label, args);
+    #error(colors, label, args) {
+        const obj = this.#profiler('error', colors, label, args);
         this.#display(this.#oldError, obj);
     }
 
     /** Writes error to console if verbose is true. */
-    #debug(label, args) {
-        const obj = this.#profiler('debug', label, args);
+    #debug(colors, label, args) {
+        const obj = this.#profiler('debug', colors, label, args);
         this.#display(this.#oldDebug, obj);
     }
 
     /** Writes trace to console if verbose is true. */
-    #trace(label, args) {
-        const obj = this.#profiler('trace', label, args);
+    #trace(colors, label, args) {
+        const obj = this.#profiler('trace', colors, label, args);
         this.#display(this.#oldTrace, obj);
     }
 

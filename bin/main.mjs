@@ -3,7 +3,7 @@
 // Imports
 import { parseArgv, readFile, fileExists, jsonLoader } from "../src/helpers/helpers.mjs";
 import { InferJSCompiler } from "../src/core/inferjs-compiler.mjs";
-import { logger } from "../src/core/logger.mjs";
+import { logger, COLOR } from "../src/core/logger.mjs";
 import path from "node:path";
 await jsonLoader("./package.json", 'info');
 
@@ -14,7 +14,7 @@ export async function main(argv) {
 
     // Compiler requires more than 1 parameter
     if (argv.length < 3) {
-        console.warn()('INFERJS-COMPILER')(`Please specify an option. For help: <InferJSCompiler> -h or --help`);
+        console.warn(COLOR.DEFAULT)('INFERJS-COMPILER')(`Please specify an option. For help: <InferJSCompiler> -h or --help`);
         process.exit(0);
     }
 
@@ -23,6 +23,7 @@ export async function main(argv) {
         f: { name: 'action', value: 'parse-files' },
         d: { name: 'action', value: 'parse-dir' },
         l: { name: 'action', value: 'parse-file-list' },
+        p: 'preview', // TODO: Preview files to process
         v: 'version',
         q: 'quiet',
         h: 'help'
@@ -36,9 +37,7 @@ export async function main(argv) {
     }
 
     //console.log(argv);
-
-
-
+    
     try {
 
         // Declare variables
@@ -68,7 +67,7 @@ export async function main(argv) {
 
             if (results.err) throw (results.err);
 
-            console.info()('INFERJS COMPILER HELP MENU')(`\n\n${results.data}`);
+            console.info(COLOR.DEFAULT)('INFERJS COMPILER HELP MENU')(`\n\n${results.data}`);
             process.exit(0);
         }
 
@@ -100,7 +99,7 @@ export async function main(argv) {
                 ic = new InferJSCompiler();
 
                 // Async Parse file 
-                results = await ic.parseList(input, inputOptions, output, outputOptions).catch((err) => {
+                results = await ic.parseFiles(input, inputOptions, output, outputOptions).catch((err) => {
                     throw new Error(`Processing action parse-files had internal error:\n${err.message}`);
                 });
 
@@ -223,7 +222,7 @@ export async function main(argv) {
 
         // Write the error to the console.
         log.verbose = true;
-        console.error()('INFERJS-COMPILER')(`${err.message}`);
+        console.error(COLOR.DEFAULT)('INFERJS-COMPILER')(`${err.message}`);
         process.exitCode = 1;
 
     }

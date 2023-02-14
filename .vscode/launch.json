@@ -13,7 +13,6 @@
             ],
             "program": "${workspaceFolder}/bin/main.mjs",
             "args": [
-                "-q",
                 " -f ",
                 "./tests/test-comments1.mjs",
                 "./tests/test-comments2.mjs",
