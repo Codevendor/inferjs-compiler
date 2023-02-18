@@ -1,6 +1,6 @@
 'use strict';
 
-import { readFile } from "./read-file.mjs";
+import { readFile } from "./read-file.js";
 
 /**
  * Gets a json file safely, not supported in es6 import.

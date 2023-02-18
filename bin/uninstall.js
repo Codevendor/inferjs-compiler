@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 // Imports
-import { logger } from "../src/core/logger.mjs";
+import { logger } from "../src/core/logger.js";
 import { exec } from "node:child_process";
 
 // Create a logger

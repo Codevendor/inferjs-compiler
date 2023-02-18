@@ -21,16 +21,16 @@ export {
     REG_INFER_PARSE_TAG_TYPEDEF,
     REG_INFER_PARSE_TAG_YIELDS
 
-} from "./regex-const.mjs";
+} from "./regex-const.js";
 
 // Helper methods
-export { buildInferObject } from "./build-infer-object.mjs";
-export { fileExists } from "./file-exists.mjs";
-export { getLineNumber } from "./get-line-number.mjs";
-export { jsonLoader } from "./json-loader.mjs";
-export { lstat } from "./lstat.mjs";
-export { parseArgv } from "./parse-argv.mjs";
-export { readDir } from "./read-dir.mjs";
-export { readFile } from "./read-file.mjs";
-export { type_of } from "./type-of.mjs";
-export { writeFile } from "./write-file.mjs";
+export { buildInferObject } from "./build-infer-object.js";
+export { fileExists } from "./file-exists.js";
+export { getLineNumber } from "./get-line-number.js";
+export { jsonLoader } from "./json-loader.js";
+export { lstat } from "./lstat.js";
+export { parseArgv } from "./parse-argv.js";
+export { readDir } from "./read-dir.js";
+export { readFile } from "./read-file.js";
+export { type_of } from "./type-of.js";
+export { writeFile } from "./write-file.js";

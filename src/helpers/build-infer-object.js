@@ -1,6 +1,6 @@
 'use strict';
 
-import { type_of } from "./type-of.mjs";
+import { type_of } from "./type-of.js";
 
 /**
  * Builds a JavaScript InferObject for processing with import.

@@ -1,20 +1,21 @@
 #! /usr/bin/env node
 
 // Imports
-import { parseArgv, readFile, fileExists, jsonLoader } from "../src/helpers/helpers.mjs";
-import { InferJSCompiler } from "../src/core/inferjs-compiler.mjs";
-import { logger, COLOR } from "../src/core/logger.mjs";
+import { curryConsole, COLOR, LABEL } from "curry-console";
+import { parseArgv, readFile, fileExists, jsonLoader } from "../src/helpers/helpers.js";
+import { InferJSCompiler } from "../src/core/inferjs-compiler.js";
 import path from "node:path";
 await jsonLoader("./package.json", 'info');
 
-// Create a logger
-global.log = new logger(true, "");
+// curryConsole Settings
+global.curr = new curryConsole();
+curr.verbose = true;
 
 export async function main(argv) {
 
     // Compiler requires more than 1 parameter
     if (argv.length < 3) {
-        console.warn(COLOR.DEFAULT)('INFERJS-COMPILER')(`Please specify an option. For help: <InferJSCompiler> -h or --help`);
+        console.warn(LABEL.DEFAULT, COLOR.DEFAULT)('INFERJS-COMPILER')(`Please specify an option. For help: <InferJSCompiler> -h or --help`);
         process.exit(0);
     }
 
@@ -34,10 +35,10 @@ export async function main(argv) {
     const args = parseArgv(argv, shortList);
 
     if(args.hasOwnProperty('quiet')) {
-        log.verbose = false;
+        curr.verbose = false;
     }
 
-    //console.log(argv);
+    //console.(argv);
 
     try {
 
@@ -68,7 +69,7 @@ export async function main(argv) {
 
             if (results.err) throw (results.err);
 
-            console.info(COLOR.DEFAULT)('INFERJS COMPILER HELP MENU')(`\n\n${results.data}`);
+            console.info(LABEL.DEFAULT, COLOR.DEFAULT)('INFERJS COMPILER HELP MENU')(`\n\n${results.data}`);
             process.exit(0);
         }
 
@@ -125,7 +126,7 @@ export async function main(argv) {
                 if (!output || typeof output !== 'string' || output.trim() === '') {
 
                     // Output to input file directory
-                    output = path.dirname(input) + '/output.mjs';
+                    output = path.dirname(input) + '/output.js';
                 }
 
                 // Get class
@@ -158,7 +159,7 @@ export async function main(argv) {
                 if (!output || typeof output !== 'string' || output.trim() === '') {
 
                     // Output to input file directory
-                    output = path.dirname(input) + '/output.mjs';
+                    output = path.dirname(input) + '/output.js';
                 }
 
                 // Get class
@@ -178,8 +179,8 @@ export async function main(argv) {
     } catch (err) {
 
         // Write the error to the console.
-        log.verbose = true;
-        console.error(COLOR.DEFAULT)('INFERJS-COMPILER')(`${err.message}`);
+        curr.verbose = true;
+        console.error(LABEL.DEFAULT, COLOR.DEFAULT)('INFERJS-COMPILER')(`${err.message}`);
         process.exitCode = 1;
 
     }

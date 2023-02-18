@@ -1,6 +1,6 @@
 // Imports
 import test from "node:test";
-import { InferJSCompiler } from "../src/core/inferjs-compiler.mjs";
+import { InferJSCompiler } from "../src/core/inferjs-compiler.js";
 
 export async function testParseDir() {
 
@@ -22,7 +22,7 @@ export async function testParseDir() {
 
 }
 
-if (process.argv?.[1].endsWith('test-parse-dir.mjs')) {
+if (process.argv?.[1].endsWith('test-parse-dir.js')) {
 
     test('Parse Dir', async (t) => {
         await testParseDir();

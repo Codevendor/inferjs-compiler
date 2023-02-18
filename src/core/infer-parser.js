@@ -1,5 +1,5 @@
 import path from "node:path";
-import { COLOR } from "./logger.mjs";
+import { COLOR, LABEL } from "curry-console";
 
 import {
     REG_JS_COMMENTS,
@@ -18,7 +18,7 @@ import {
     REG_INFER_PARSE_TAG_YIELDS,
     getLineNumber,
     type_of
-} from "../helpers/helpers.mjs";
+} from "../helpers/helpers.js";
 
 /**
  * The inferParser class

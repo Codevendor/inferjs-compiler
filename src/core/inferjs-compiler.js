@@ -1,8 +1,9 @@
 // Imports
+import { COLOR, LABEL } from "curry-console";
+import { printTable } from "console-table-printer";
 import path from "node:path";
-import { COLOR } from "./logger.mjs";
-import { inferParser } from "./infer-parser.mjs";
-import { buildInferObject, lstat, readDir, readFile, writeFile, type_of } from "../helpers/helpers.mjs";
+import { inferParser } from "./infer-parser.js";
+import { buildInferObject, lstat, readDir, readFile, writeFile, type_of } from "../helpers/helpers.js";
 
 /**
  * The InferJSCompiler Class
@@ -36,22 +37,29 @@ export class InferJSCompiler extends inferParser {
         //if (typeof outputFile !== 'string') throw new TypeError(`Incorrect type for method parseList, parameter outputFile must be an string!`);
         if (typeof outputFileOptions !== 'object') throw new TypeError(`Incorrect type for method parseList, parameter outputFileOptions must be an object!`);
 
-        console.info(COLOR.DEFAULT)('PARSE-LIST')(`Loading inputList: ${inputList} ...`);
+        // Check for preview
+        let preview = false;
+        if (this.args.hasOwnProperty('preview')) {
+
+            preview = true;
+
+            // Turn off log verbose
+            curr.verbose = false;
+        }
+
+        console.info(LABEL.DEFAULT, COLOR.DEFAULT)('PARSE-LIST')(`Loading inputList: ${inputList} ...`);
 
         for (let i = 0; i < inputList.length; i++) {
 
-            // Get the file
-            let inputFile = inputList[i];
-
             // Check if inputFile is absolute path.
-            if (!path.isAbsolute(inputFile)) {
-                inputFile = path.resolve(inputFile);
+            if (!path.isAbsolute(inputList[i])) {
+                inputList[i] = path.normalize(path.resolve(inputList[i]));
             }
 
-            console.info(COLOR.DEFAULT)('READ-FILE')(`Reading file: ${inputFile} ...`);
+            console.info(LABEL.DEFAULT, COLOR.DEFAULT)('READ-FILE')(`Reading file: ${inputList[i]} ...`);
 
             // Read in file
-            const readResults = await readFile(inputFile, inputFileOptions);
+            const readResults = await readFile(inputList[i], inputFileOptions);
 
             // Throw Err
             if (!!readResults.err) throw readResults.err;
@@ -59,39 +67,75 @@ export class InferJSCompiler extends inferParser {
             // Convert readResults to string
             readResults.data = readResults.data.toString();
 
-            console.info(COLOR.DEFAULT)('PARSE-FILE')(`Parsing file: ${inputFile} ...`);
+            console.info(LABEL.DEFAULT, COLOR.DEFAULT)('PARSE-FILE')(`Parsing file: ${inputList[i]} ...`);
 
             // Parse file to object
-            this.parse(inputFile, readResults.data);
+            if (!preview) this.parse(inputList[i], readResults.data);
 
         }
 
         const inferObject = buildInferObject(this.source, outputFileOptions?.['module']);
 
-        // Check if output file
-        if (type_of(outputFile) === 'undefined' || outputFile.toString() === '') {
+        // Check if preview mode
+        if (!preview) {
 
-            // Output to console
-            log.verbose = true;
-            console.log(inferObject);
-            process.exitCode = 0;
-            return;
+            // Check if output file
+            if (type_of(outputFile) === 'undefined' || outputFile.toString() === '') {
+
+                // Output to console
+                curr.verbose = true;
+                console.log(inferObject);
+                process.exitCode = 0;
+                return;
+
+
+            } else {
+
+                if (!path.isAbsolute(outputFile)) {
+                    outputFile = path.normalize(path.resolve(outputFile));
+                }
+
+            }
+
+            console.info(LABEL.DEFAULT, COLOR.DEFAULT)('WRITE-FILE')(`Writing output file: ${outputFile} ...`);
+
+            // Write file to output file with json
+            const writeResults = await writeFile(outputFile, inferObject, outputFileOptions);
+
+            // Throw err
+            if (!!writeResults.err) throw writeResults.err;
+
+            console.info(LABEL.DEFAULT, COLOR.DEFAULT)('INFERJS-COMPILER')(`Finished`);
+
+        } else {
+
+            // Check if output file
+            if (type_of(outputFile) === 'undefined' || outputFile.toString() === '') {
+
+                outputFile = '-> Stdout';
+
+            } else {
+
+                if (!path.isAbsolute(outputFile)) {
+                    outputFile = path.normalize(path.resolve(outputFile));
+                }
+
+            }
+
+            // Turn back on log
+            curr.verbose = true;
+
+            // Create preview
+            console.info(LABEL.DEFAULT, COLOR.DEFAULT)(`PREVIEW MODE`)('');
+
+            //Input List
+            printTable(inputList.map((item, idx, arr) => { return { idx: idx, "Input File Paths": item }; }));
+
+            // Ouput File
+            printTable([outputFile].map((item, idx, arr) => { return { "Output File Path": item }; }));
+
 
         }
-
-        if (!path.isAbsolute(outputFile)) {
-            outputFile = path.resolve(outputFile);
-        }
-
-        console.info(COLOR.DEFAULT)('WRITE-FILE')(`Writing output file: ${outputFile} ...`);
-
-        // Write file to output file with json
-        const writeResults = await writeFile(outputFile, inferObject, outputFileOptions);
-
-        // Throw err
-        if (!!writeResults.err) throw writeResults.err;
-
-        console.info(COLOR.DEFAULT)('INFERJS-COMPILER')(`Finished`);
 
     }
 
@@ -115,7 +159,7 @@ export class InferJSCompiler extends inferParser {
             inputFileList = path.resolve(inputFileList);
         }
 
-        console.info(COLOR.DEFAULT)('INFERJS-COMPILER')(`Loading inputFileList: ${inputFileList} ...`);
+        console.info(LABEL.DEFAULT, COLOR.DEFAULT)('INFERJS-COMPILER')(`Loading inputFileList: ${inputFileList} ...`);
 
         // Read in file
         const readResults = await readFile(inputFileList, inputFileOptions);

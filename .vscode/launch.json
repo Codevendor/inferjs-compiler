@@ -11,13 +11,14 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/bin/main.mjs",
+            "program": "${workspaceFolder}/bin/main.js",
             "args": [
+                "-p",
                 " -f ",
-                "./tests/test-comments1.mjs",
-                "./tests/test-comments2.mjs",
+                "./tests/test-comments1.js",
+                "./tests/test-comments2.js",
                 /*"--output-options-flag='w+'",*/
-                /*"--output=./tests/inferobjects/test-comments1.io.mjs"*/
+                /*"--output=./tests/inferobjects/test-comments1.io.js"*/
             ],
             "env" : { "NODE_ENV" : "production" },
         },
@@ -30,8 +31,8 @@
             ],
             "program": "InferJSCompiler",
             "args": [
-                "-f --input-file=./tests/test-comments1.mjs",
-                "--output-file=./tests/inferobjects/test-comments1.io.mjs"
+                "-f --input-file=./tests/test-comments1.js",
+                "--output-file=./tests/inferobjects/test-comments1.io.js"
             ]
         }
     ]

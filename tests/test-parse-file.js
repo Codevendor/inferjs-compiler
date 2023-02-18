@@ -1,17 +1,17 @@
 // Imports
 import test from "node:test";
-import { main } from "../bin/main.mjs";
+import { main } from "../bin/main.js";
 
 /*
-import { InferJSCompiler } from "../src/core/inferjs-compiler.mjs";
+import { InferJSCompiler } from "../src/core/inferjs-compiler.js";
 
 export async function testParseFile() {
 
-    const input = `./test-comments1.mjs`;
+    const input = `./test-comments1.js`;
 
     const inputOptions = { };
 
-    const output = './inferobjects/test-comments1.io.mjs';
+    const output = './inferobjects/test-comments1.io.js';
 
     const outputOptions = { module: 'esm'};
 
@@ -32,7 +32,7 @@ export async function testParseFile() {
     
 }
 
-if (process.argv?.[1].endsWith('test-parse-file.mjs')) {
+if (process.argv?.[1].endsWith('test-parse-file.js')) {
     
     test('Parse File', async(t) => {
         await testParseFile();

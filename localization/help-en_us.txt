@@ -3,7 +3,7 @@ InferJSCompiler - InferJS Compiler
 
 SYNOPSIS
     InferJSCompiler [options]
-    node [path-to-inferjs-compiler-main.mjs] [options]
+    node [path-to-inferjs-compiler-main.js] [options]
 
 DESCRIPTION
     A compiler that processes JSDoc comments into an InferObject File for utilizing with the InferJS Library.

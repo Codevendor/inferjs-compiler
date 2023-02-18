@@ -1,11 +1,11 @@
 // Imports
 import test from "node:test";
-import { testParseDir } from "./test-parse-dir.mjs";
-import { testParseFile } from "./test-parse-file.mjs";
-import { testParseFileList } from "./test-parse-file-list.mjs";
-import { testParseList } from "./test-parse-list.mjs";
+import { testParseDir } from "./test-parse-dir.js";
+import { testParseFile } from "./test-parse-file.js";
+import { testParseFileList } from "./test-parse-file-list.js";
+import { testParseList } from "./test-parse-list.js";
 
-if (process.argv?.[1].endsWith('test.mjs')) {
+if (process.argv?.[1].endsWith('test.js')) {
 
     test('Parse File', async (t) => {
         await testParseFile();
