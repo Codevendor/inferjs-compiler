@@ -8,13 +8,6 @@
   </a>
 </div>
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
 ## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler Overview
 A compiler that processes **JSDoc** comments into an [**InferObject**]() file, for utilizing with the [**InferJS-Library**](https://github.com/Codevendor/inferjs/tree/main/projects/inferjs-library). The [**InferJS-Compiler**](https://github.com/Codevendor/inferjs/tree/main/projects/inferjs-compiler) is part of a bigger project called [**InferJS**](https://github.com/Codevendor/inferjs/tree/main/projects/inferjs-library). The compiler can be used for other projects as well, that may need to interpret **JSDoc** comments into **JSON** type files.
 
@@ -24,3 +17,5 @@ A compiler that processes **JSDoc** comments into an [**InferObject**]() file, f
 * [Visual Studio Code](https://code.visualstudio.com/)
 
 ## Installation
+
+
