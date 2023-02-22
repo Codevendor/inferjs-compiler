@@ -35,6 +35,9 @@ ACTIONS
         per file. Parses the JSDoc comments into an InferObject, that can be outputed to the 
         terminal or specified output file. Delimiter Defaults: to newline character.
 
+    -c, --combine
+        Combines multiple InferObject files together, into one file.
+
 OPTIONS
 
     -h, --help
@@ -51,6 +54,26 @@ OPTIONS
 
     -v, --version
         Displays the version number of the inferjs-compiler.
-
     
+INPUT-OPTIONS
 
+    FORMAT: --name = value
+
+    --input-options-encoding
+        The encoding type for the input files. Example: 'UTF8'.
+
+    --input-options-recursive
+        Used in combination with -d, to recursively navigate through sub directories, looking for files to parse.
+
+    --input-options-file-extensions
+        Used in combination with -d, to allow only specific file extensions to be parsed from directories.
+
+OUTPUT-OPTIONS
+
+    FORMAT: --name = value
+
+    --output-options-module
+        Generates the output InferObject, in a specific module type format. Formats: (esmodule, commonjs, script, json). Defaults to esmodule.
+
+    --output-options-flag
+        The file output flags for writing file. 
