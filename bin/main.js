@@ -2,10 +2,13 @@
 
 // Imports
 import { curryConsole, COLOR, LABEL } from "curry-console";
-import { parseArgv, readFile, fileExists, jsonLoader } from "../src/helpers/helpers.js";
+import { loadMeta, parseArgv, readFile, fileExists, jsonLoader } from "../src/helpers/helpers.js";
 import { InferJSCompiler } from "../src/core/inferjs-compiler.js";
 import path from "node:path";
-await jsonLoader("./package.json", 'info');
+
+// Load Meta
+const meta = loadMeta(import.meta);
+await jsonLoader(path.resolve(meta.__dirname, "../package.json"), 'info');
 
 // curryConsole Settings
 global.curr = new curryConsole();

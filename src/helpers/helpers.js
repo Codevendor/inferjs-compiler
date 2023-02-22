@@ -28,6 +28,7 @@ export { buildInferObject } from "./build-infer-object.js";
 export { fileExists } from "./file-exists.js";
 export { getLineNumber } from "./get-line-number.js";
 export { jsonLoader } from "./json-loader.js";
+export { loadMeta } from "./load-meta.js";
 export { lstat } from "./lstat.js";
 export { parseArgv } from "./parse-argv.js";
 export { readDir } from "./read-dir.js";
