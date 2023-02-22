@@ -66,7 +66,10 @@ export function type_of(src, extended = false) {
                         default:
 
                             // Check if constructor
-                            if (src.constructor.name) return src.constructor.name;
+                            if (src.constructor.name) {
+                                if(src.constructor.name.toLowerCase() === 'object') return 'object';
+                                return src.constructor.name;
+                            } 
 
                             return 'object';
 
