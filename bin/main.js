@@ -9,13 +9,22 @@ await jsonLoader("./package.json", 'info');
 
 // curryConsole Settings
 global.curr = new curryConsole();
+curr.profile = true;
 curr.verbose = true;
+curr.defaultsLog = [];
+curr.defaultsInfo = [LABEL.WHITE, LABEL.BG_BLUE, COLOR.BLUE];
+curr.defaultsWarn = [LABEL.WHITE, LABEL.BG_YELLOW, COLOR.YELLOW];
+curr.defaultsError = [LABEL.WHITE, LABEL.BG_RED, COLOR.RED];
 
+/**
+ * The main entry point into the CLI program.
+ * @param {array} argv - The terminal parameters.
+ */
 export async function main(argv) {
 
     // Compiler requires more than 1 parameter
     if (argv.length < 3) {
-        console.warn(LABEL.DEFAULT, COLOR.DEFAULT)('INFERJS-COMPILER')(`Please specify an option. For help: <InferJSCompiler> -h or --help`);
+        console.warn()('INFERJS-COMPILER',`Please specify an option. For help: <InferJSCompiler> -h or --help`);
         process.exit(0);
     }
 
@@ -34,7 +43,7 @@ export async function main(argv) {
     // Separate arguments
     const args = parseArgv(argv, shortList);
 
-    if(args.hasOwnProperty('quiet')) {
+    if (args.hasOwnProperty('quiet')) {
         curr.verbose = false;
     }
 
@@ -46,7 +55,7 @@ export async function main(argv) {
         let input, inputOptions, output, outputOptions, ic, results;
 
         // Check if version
-        if(args.hasOwnProperty('version')) {
+        if (args.hasOwnProperty('version')) {
 
             console.log(info.version);
             process.exit();
@@ -60,16 +69,16 @@ export async function main(argv) {
             let helpFilePath = path.normalize(path.resolve(`localization/${helpFile}`));
 
             const exists = await fileExists(helpFilePath);
-            if(!exists) {
+            if (!exists) {
                 helpFile = `help-en_us.txt`;
                 helpFilePath = path.normalize(path.resolve(`localization/${helpFile}`));
             }
-            
+
             results = await readFile(helpFilePath, 'utf8');
 
             if (results.err) throw (results.err);
 
-            console.info(LABEL.DEFAULT, COLOR.DEFAULT)('INFERJS COMPILER HELP MENU')(`\n\n${results.data}`);
+            console.info()('INFERJS COMPILER HELP MENU')(`\n\n${results.data}`);
             process.exit(0);
         }
 
@@ -80,7 +89,7 @@ export async function main(argv) {
             // Parses a single js file
             case 'parse-files':
 
-                if (args['input'].length===0) throw new Error(`Missing required argument: <input> for parse-file`);
+                if (args['input'].length === 0) throw new Error(`Missing required argument: <input> for parse-files`);
 
                 input = args['input'];
 
@@ -91,7 +100,7 @@ export async function main(argv) {
                 if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
-                if(args['output'].length > 0) {
+                if (args['output'].length > 0) {
 
                     output = args['output'][0];
 
@@ -110,32 +119,59 @@ export async function main(argv) {
             // Parses a directory of file
             case 'parse-dir':
 
-                if (!args.hasOwnProperty('input-dir')) throw new Error(`Missing required argument: <input-dir> for parse-dir`);
+                if (!args.hasOwnProperty('input')) throw new Error(`Missing required argument: <input> for parse-dir`);
 
-                input = args['input-dir'];
+                input = args['input'];
 
                 inputOptions = { encoding: 'utf8', recursive: false, allowedExtensions: ["js", "mjs"] };
-                if (args.hasOwnProperty('input-dir-options-recursive')) inputOptions['recursive'] = args['input-dir-options-recursive'];
-                if (args.hasOwnProperty('input-dir-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-dir-options-allowedExtensions'];
+                if (args.hasOwnProperty('input-options-recursive')) inputOptions['recursive'] = args['input-options-recursive'];
+                if (args.hasOwnProperty('input-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-options-allowedExtensions'];
 
                 outputOptions = { flag: "wx", module: "script" };
                 if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
-                output = args['output-file'];
-                if (!output || typeof output !== 'string' || output.trim() === '') {
+                if (args['output'].length > 0) {
 
-                    // Output to input file directory
-                    output = path.dirname(input) + '/output.js';
+                    output = args['output'][0];
+
                 }
 
                 // Get class
                 ic = new InferJSCompiler(args);
 
                 // Async Parse file 
-                results = await ic.parseDirectory(input, inputOptions, output, outputOptions).catch((err) => {
+                results = await ic.parseDirectories(input, inputOptions, output, outputOptions).catch((err) => {
                     throw new Error(`Processing action parse-dir had internal error:\n${err}`);
                 });
+
+
+                // if (!args.hasOwnProperty('input-dir')) throw new Error(`Missing required argument: <input-dir> for parse-dir`);
+
+                // input = args['input-dir'];
+
+                // inputOptions = { encoding: 'utf8', recursive: false, allowedExtensions: ["js", "mjs"] };
+                // if (args.hasOwnProperty('input-dir-options-recursive')) inputOptions['recursive'] = args['input-dir-options-recursive'];
+                // if (args.hasOwnProperty('input-dir-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-dir-options-allowedExtensions'];
+
+                // outputOptions = { flag: "wx", module: "script" };
+                // if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
+                // if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
+
+                // output = args['output-file'];
+                // if (!output || typeof output !== 'string' || output.trim() === '') {
+
+                //     // Output to input file directory
+                //     output = path.dirname(input) + '/output.js';
+                // }
+
+                // // Get class
+                // ic = new InferJSCompiler(args);
+
+                // // Async Parse file 
+                // results = await ic.parseDirectory(input, inputOptions, output, outputOptions).catch((err) => {
+                //     throw new Error(`Processing action parse-dir had internal error:\n${err}`);
+                // });
 
                 break;
 
@@ -180,7 +216,7 @@ export async function main(argv) {
 
         // Write the error to the console.
         curr.verbose = true;
-        console.error(LABEL.DEFAULT, COLOR.DEFAULT)('INFERJS-COMPILER')(`${err.message}`);
+        console.error()('INFERJS-COMPILER',`${err.message}`);
         process.exitCode = 1;
 
     }

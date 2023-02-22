@@ -32,5 +32,6 @@ export { lstat } from "./lstat.js";
 export { parseArgv } from "./parse-argv.js";
 export { readDir } from "./read-dir.js";
 export { readFile } from "./read-file.js";
+export { resolvePaths } from "./resolve-paths.js";
 export { type_of } from "./type-of.js";
 export { writeFile } from "./write-file.js";

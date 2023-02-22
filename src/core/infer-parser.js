@@ -120,7 +120,7 @@ export class inferParser {
         const m = jsComment.match(REG_INFER_ID);
         if (!m || m.length !== 2 || m[1].trim() === '') {
             const lineNumber = getLineNumber(fileData, jsComment);
-            console.warn()('INFERJS-COMPILER')(`JS Comment missing tag @inferid on Line: ${lineNumber}\nFile: ${filePath}\nComment:\n${jsComment}`);
+            console.warn()('INFERJS-COMPILER',`JS Comment missing tag @inferid on Line: ${lineNumber}\nFile: ${filePath}\nComment:\n${jsComment}`);
             return;
         }
 
