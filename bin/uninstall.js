@@ -1,20 +1,34 @@
 #! /usr/bin/env node
 
 // Imports
-import { logger } from "../src/core/logger.js";
 import { exec } from "node:child_process";
-
-// Create a logger
-global.log = new logger(true, "\n");
+import * as readline from 'node:readline';
 
 const name = process.env.npm_package_name;
 const uname = process.env.npm_package_name.toUpperCase();
 const version = process.env.npm_package_version;
 
-console.info()(uname)(`Uninstall Script - Intialized for ${name}@${version} ...`);
+console.log(`------------------------------------------------------------------`)
+console.log(` Un-Install Script for ${name}@${version}`);
+console.log(`------------------------------------------------------------------\n`)
 
-console.info()('GLOBAL')(`Removing ${name}@${version} globally ...`);
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-exec(`npm uninstall -g ${name}`);
+rl.question(`Would you like to un-install ${name}@${version}?\nType yes or no?: `, res => {
+    
+    if(res.toUpperCase().startsWith('Y')) {
 
-console.info()(uname)(`Uninstall Complete`);
+        console.log(`\nUn-Installing ${name}@${version} ...\n`);
+        rl.close();
+
+    } else {
+
+        process.exitCode = 1;
+        process.exit();
+
+    }
+
+});

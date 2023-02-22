@@ -19,9 +19,15 @@ A compiler that processes **JSDoc** comments into an [**InferObject**]() file, f
 
 ## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Installation
 
-To install the latest version of [**InferJS-Compiler**](https://github.com/Codevendor/inferjs/tree/main/projects/inferjs-compiler) with **npm**:
+To install the latest version of [**InferJS-Compiler**](https://github.com/Codevendor/inferjs/tree/main/projects/inferjs-compiler) locally with **npm**:
+#### Install: [Locally]()
 ```ps
-npm -i inferjs-compiler
+npm install inferjs-compiler
+```
+
+#### Install: [Globally]()
+```ps
+npm install -g inferjs-compiler 
 ```
 
 **Optional**: If you would like to download the repo source code from **github**:
@@ -30,16 +36,19 @@ git clone https://github.com/Codevendor/inferjs.git
 ```
 
 
+
+
+
 ## <img height="28" width="29" src="https://github.com/Codevendor/inferjs/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: CLI Usage
 
 To use the [**InferJS-Compiler**](https://github.com/Codevendor/inferjs/tree/main/projects/inferjs-compiler) from the command line and create [**InferObjects**](), please use the following commands.
 ```sh
-# CLI Run Format - InferJS-Compiler Globally Installed: 
+# Global: CLI Run Format - InferJS-Compiler Globally Installed: 
 inferjs-compiler <cmd> <input> <inputOptions> <outputOptions> -o <output>
 
 # or
 
-# CLI Node Run Format - InferJS-Compiler Not Globally Installed
+# Local: CLI Node Run Format - InferJS-Compiler Not Globally Installed
 node <path/to/inferjs-compiler> <cmd> <input> <inputOptions> <outputOptions> -o <output>
 ```
 

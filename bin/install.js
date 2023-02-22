@@ -1,22 +1,40 @@
 #! /usr/bin/env node
 
 // Imports
-import { logger, COLOR } from "../src/core/logger.js";
-import { exec } from "node:child_process";
-
-// Create a logger
-global.log = new logger(true, "\n");
+import { execSync } from "node:child_process";
+import * as readline from 'node:readline';
 
 const name = process.env.npm_package_name;
 const uname = process.env.npm_package_name.toUpperCase();
 const version = process.env.npm_package_version;
 
-console.info(COLOR.DEFAULT)(uname)(`Install Script - Intialized for ${name}@${version} ...`);
+console.log(`------------------------------------------------------------------`)
+console.log(` Install Script for ${name}@${version}`);
+console.log(`------------------------------------------------------------------\n`)
 
-console.info(COLOR.DEFAULT)(`GLOBAL`)(`Installing ${name}@${version} globally ...`);
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-exec(`npm install -g .`);
+rl.on('line', res => {
+    
+    if(res.toUpperCase().startsWith('Y')) {
 
-console.info(COLOR.DEFAULT)(uname)(`Install Complete`);
+        console.log(`\nInstalling ${name}@${version} ...\n`);
 
-console.log(COLOR.GREEN)('Testing');
+        rl.close();
+
+    } else {
+
+        console.log(`\nNot Installed... Exiting\n`);
+
+        process.exitCode = 1;
+        process.exit();
+
+    }
+
+});
+
+rl.setPrompt(`Would you like to install ${name}@${version}\nType yes or no?: `);
+rl.prompt();
