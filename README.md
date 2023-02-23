@@ -3,7 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/Codevendor/inferjs-compiler">
+  <a href="https://github.com/Codevendor/inferjs">
     <img src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/inferjs-logo.png?raw=true" alt="Logo" height="183px" width="443px" />
   </a>
 </div>
