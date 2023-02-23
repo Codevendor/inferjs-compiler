@@ -1,0 +1,1 @@
+window.InferObject = {"globals":{},"infers":{}};

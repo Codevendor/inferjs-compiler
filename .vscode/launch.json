@@ -13,27 +13,53 @@
             ],
             "program": "${workspaceFolder}/bin/main.js",
             "args": [
+                //"-h",
+                //"-v",
                 "-p",
                 " -f ",
                 "./tests/test-comments1.js",
                 "./tests/test-comments2.js",
                 /*"--output-options-flag='w+'",*/
-                /*"--output=./tests/inferobjects/test-comments1.io.js"*/
+                //"--output=./tests/inferobjects/test-comments1.io.js"
             ],
             "env" : { "NODE_ENV" : "production" },
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "DEBUG: Test Parse File2",
+            "name": "DEBUG: Test Parse Directory",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "InferJSCompiler",
+            "program": "${workspaceFolder}/bin/main.js",
             "args": [
-                "-f --input-file=./tests/test-comments1.js",
-                "--output-file=./tests/inferobjects/test-comments1.io.js"
-            ]
+                "-p",
+                " -d ",
+                "./tests/",
+                "./src",
+                "--input-options-recursive=true",
+                //"--output-options-flag='w+'",
+                "--output=./tests/inferobjects/test-comments1.io.js"
+            ],
+            "env" : { "NODE_ENV" : "production" },
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "DEBUG: Test Parse File List",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/bin/main.js",
+            "args": [
+                "-p",
+                "-l",
+                "./tests/test-file-list.txt",
+                "--input-options-recursive=true",
+                //"--output-options-flag='w+'",
+                "--output=./tests/inferobjects/test-comments1.io.js"
+            ],
+            "env" : { "NODE_ENV" : "production" },
         }
     ]
 }

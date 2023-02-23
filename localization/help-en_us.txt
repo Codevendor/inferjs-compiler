@@ -68,6 +68,9 @@ INPUT-OPTIONS
     --input-options-file-extensions
         Used in combination with -d, to allow only specific file extensions to be parsed from directories.
 
+    --input-options-delimiter
+        Used in combination with -l, to specify the delimiter for parsing the file list with. Defaults to newline character.
+
 OUTPUT-OPTIONS
 
     FORMAT: --name = value

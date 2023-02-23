@@ -1,0 +1,2 @@
+"./tests/test-comments1.js"
+"./tests/test-comments2.js"

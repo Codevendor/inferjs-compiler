@@ -34,7 +34,7 @@ export class InferJSCompiler extends inferParser {
         // Check types
         if (type_of(input, true) !== 'array') throw new TypeError(`Incorrect type for method parseFiles, first parameter input, must be an array!`);
         if (type_of(inputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseFiles, second parameter inputOptions, must be an object!`);
-        if (type_of(output, true) !== 'string') throw new TypeError(`Incorrect type for method parseFiles, third parameter output, must be an string!`);
+        if (type_of(output, true) !== 'undefined' && type_of(output, true) !== 'string') throw new TypeError(`Incorrect type for method parseFiles, third parameter output, must be an string!`);
         if (type_of(outputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseFiles, fourth parameter outputOptions, must be an object!`);
 
         // Resolve and normalize paths
@@ -47,7 +47,7 @@ export class InferJSCompiler extends inferParser {
             if (output.length === 0) output.push('-> Stdout');
 
             // Create preview
-            console.info()(`PREVIEW MODE`, '');
+            console.info(ACTION.VERBOSE(false))(`PREVIEW MODE`, '');
 
             // Input
             const itable = new Table({
@@ -100,7 +100,7 @@ export class InferJSCompiler extends inferParser {
         }
 
         // Build infer object
-        const inferObject = buildInferObject(this.source, outputOptions?.['module']);
+        const inferObject = buildInferObject(this.source, outputOptions?.module);
 
         // Check if output file
         if (output.length === 0) {
@@ -201,18 +201,19 @@ export class InferJSCompiler extends inferParser {
         // Check types
         if (type_of(input, true) !== 'array') throw new TypeError(`Incorrect type for method parseFileList, first parameter input, must be an array!`);
         if (type_of(inputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseFileList, second parameter inputOptions, must be an object!`);
-        if (type_of(output, true) !== 'string') throw new TypeError(`Incorrect type for method parseFileList, third parameter output, must be an string!`);
+        if (type_of(output, true) !== 'undefined' && type_of(output, true) !== 'string') throw new TypeError(`Incorrect type for method parseFileList, third parameter output, must be an string!`);
         if (type_of(outputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseFileList, fourth parameter outputOptions, must be an object!`);
 
-        // Check if inputFile is absolute path.
-        if (!path.isAbsolute(input)) {
-            input = path.resolve(input);
-        }
+        // Resolve and normalize paths
+        input = resolvePaths(input);
+        //output = resolvePaths(output);
 
-        console.info()('INFERJS-COMPILER', `Loading inputFileList: ${input} ...`);
+        if(input.length !== 1) throw new Error(`Input for parse-file-list must provide 1 file list path!`);
+
+        //console.info()('INFERJS-COMPILER', `Loading inputFileList: ${input} ...`);
 
         // Read in file
-        const readResults = await readFile(input, inputOptions);
+        const readResults = await readFile(input[0], inputOptions);
 
         // Throw Err
         if (readResults.err) throw readResults.err;
@@ -221,10 +222,18 @@ export class InferJSCompiler extends inferParser {
         readResults.data = readResults.data.toString();
 
         // Split the file lines and trim each
-        const lines = readResults.data.split("\n").map(item => item.trim());
+        input = readResults.data.split(inputOptions.delimiter).map( item => {
+        
+            item = item.trim();
+            if (item.startsWith('"') && item.endsWith('"')) return item.slice(1, -1).trim();
+            if (item.startsWith("'") && item.endsWith("'")) return item.slice(1, -1).trim();
+            if (item.startsWith('`') && item.endsWith('`')) return item.slice(1, -1).trim();
+            return item;
+
+        });
 
         // Call parseFiles
-        await this.parseFiles(lines, inputOptions, outputFile, outputOptions);
+        await this.parseFiles(input, inputOptions, output, outputOptions);
 
     }
 
@@ -240,7 +249,7 @@ export class InferJSCompiler extends inferParser {
         // Check types
         if (type_of(input, true) !== 'array') throw new TypeError(`Incorrect type for method parseDirectories, first parameter input, must be an array!`);
         if (type_of(inputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseDirectories, second parameter inputOptions, must be an object!`);
-        if (type_of(output, true) !== 'string') throw new TypeError(`Incorrect type for method parseDirectories, third parameter output, must be an string!`);
+        if (type_of(output, true) !== 'undefined' && type_of(output, true) !== 'string') throw new TypeError(`Incorrect type for method parseDirectories, third parameter output, must be an string!`);
         if (type_of(outputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseDirectories, fourth parameter outputOptions, must be an object!`);
 
 
@@ -289,10 +298,10 @@ export class InferJSCompiler extends inferParser {
     /**
      * Gets a directory list of sub folders and files.
      * @param {string} inputDirectory - The input directory to look in.
-     * @param {object} inputFileOptions - The input directory options.
+     * @param {object} inputOptions - The input directory options.
      * @returns 
      */
-    async #getDirectoryList(inputDirectory, inputFileOptions) {
+    async #getDirectoryList(inputDirectory, inputOptions) {
 
         // Holds the files
         let files = [];
@@ -315,10 +324,10 @@ export class InferJSCompiler extends inferParser {
             // Throw error
             if (!!results.err) throw results.err;
 
-            if (results.stats.isDirectory() && inputFileOptions.hasOwnProperty('recursive') && inputFileOptions.recursive.toString().toLowerCase() === 'true') {
+            if (results.stats.isDirectory() && inputOptions.hasOwnProperty('recursive') && inputOptions.recursive.toString().toLowerCase() === 'true') {
 
                 // Add recursive files to list;
-                const rfiles = await this.#getDirectoryList(itemPath, inputFileOptions);
+                const rfiles = await this.#getDirectoryList(itemPath, inputOptions);
                 files = files.concat(rfiles);
                 continue;
 
@@ -329,25 +338,25 @@ export class InferJSCompiler extends inferParser {
             } else {
 
                 // Only allow specific file extensions
-                if (inputFileOptions) {
+                if (inputOptions) {
 
                     // Check allowed extensions
-                    if (inputFileOptions.hasOwnProperty('allowedExtensions')) {
+                    if (inputOptions.hasOwnProperty('fileExtensions')) {
 
                         // Check if allowedExtensions is string or array of string;
-                        if (typeof inputFileOptions.allowedExtensions === 'string') {
+                        if (typeof inputOptions.fileExtensions === 'string') {
 
-                            let item = inputFileOptions.allowedExtensions.trim().toLowerCase();
+                            let item = inputOptions.fileExtensions.trim().toLowerCase();
 
                             if (item && item[0] !== '.') item = '.' + item;
 
                             // Convert to array for checking
-                            inputFileOptions.allowedExtensions = [item];
+                            inputOptions.fileExtensions = [item];
 
-                        } else if (typeof inputFileOptions.allowedExtensions === 'object' && Array.isArray(inputFileOptions.allowedExtensions)) {
+                        } else if (typeof inputOptions.fileExtensions === 'object' && Array.isArray(inputOptions.fileExtensions)) {
 
                             // Convert list to all lowercase
-                            inputFileOptions.allowedExtensions = inputFileOptions.allowedExtensions.map(item => {
+                            inputOptions.fileExtensions = inputOptions.fileExtensions.map(item => {
                                 item = item.trim().toLowerCase();
                                 if (item[0] !== '.') item = '.' + item;
                                 return item;
@@ -356,12 +365,12 @@ export class InferJSCompiler extends inferParser {
                         } else {
 
                             // Throw error
-                            throw new TypeError(`Method parseDirectory(inputFileOptions.allowedExtensions) must be a string or array of file extensions!`);
+                            throw new TypeError(`Method parseDirectory(inputOptions.fileExtensions) must be a string or array of file extensions!`);
 
                         }
 
                         // Check if file is included
-                        if (inputFileOptions.allowedExtensions.includes(path.extname(itemPath).toLowerCase())) files.push(itemPath);
+                        if (inputOptions.fileExtensions.includes(path.extname(itemPath).toLowerCase())) files.push(itemPath);
 
                     } else {
 

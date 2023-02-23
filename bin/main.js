@@ -1,14 +1,14 @@
 #! /usr/bin/env node
 
 // Imports
-import { curryConsole, COLOR, LABEL } from "curry-console";
+import { curryConsole, COLOR, LABEL, ACTION } from "curry-console";
 import { loadMeta, parseArgv, readFile, fileExists, jsonLoader } from "../src/helpers/helpers.js";
 import { InferJSCompiler } from "../src/core/inferjs-compiler.js";
 import path from "node:path";
 
 // Load Meta
 const meta = loadMeta(import.meta);
-await jsonLoader(path.resolve(meta.__dirname, "../package.json"), 'info');
+await jsonLoader(path.normalize(path.resolve(meta.__dirname, "../package.json")), 'info');
 
 // curryConsole Settings
 global.curr = new curryConsole();
@@ -27,20 +27,25 @@ export async function main(argv) {
 
     // Compiler requires more than 1 parameter
     if (argv.length < 3) {
-        console.warn()('INFERJS-COMPILER',`Please specify an option. For help: <InferJSCompiler> -h or --help`);
+        console.warn(ACTION.PROFILE(false))('INFERJS-COMPILER', `Please specify an option. For help: inferjs-compiler -h or --help`);
         process.exit(0);
     }
 
     // Create a shorthand list
     const shortList = {
+
+        // Actions
         f: { name: 'action', value: 'parse-files' },
-        d: { name: 'action', value: 'parse-dir' },
+        d: { name: 'action', value: 'parse-directories' },
         l: { name: 'action', value: 'parse-file-list' },
+
+        // Options
+        h: 'help',
         p: 'preview', // TODO: Preview files to process
+        q: 'quiet',
         s: 'stats', // TODO: Shows the stats
         v: 'version',
-        q: 'quiet',
-        h: 'help'
+
     };
 
     // Separate arguments
@@ -69,19 +74,19 @@ export async function main(argv) {
         if (args.hasOwnProperty('help')) {
 
             let helpFile = (process.env.hasOwnProperty('LANGUAGE')) ? `help-${process.env['LANGUAGE']}.txt` : `help-en_us.txt`;
-            let helpFilePath = path.normalize(path.resolve(`localization/${helpFile}`));
+            let helpFilePath = path.normalize(path.resolve(meta.__dirname, `../localization/${helpFile}`));
 
             const exists = await fileExists(helpFilePath);
             if (!exists) {
                 helpFile = `help-en_us.txt`;
-                helpFilePath = path.normalize(path.resolve(`localization/${helpFile}`));
+                helpFilePath = path.normalize(path.resolve(meta.__dirname, `../localization/${helpFile}`));
             }
 
             results = await readFile(helpFilePath, 'utf8');
 
             if (results.err) throw (results.err);
 
-            console.info()('INFERJS COMPILER HELP MENU')(`\n\n${results.data}`);
+            console.info(ACTION.PROFILE(false))('INFERJS COMPILER HELP MENU', `\n\n${results.data}`);
             process.exit(0);
         }
 
@@ -103,11 +108,10 @@ export async function main(argv) {
                 if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
-                if (args['output'].length > 0) {
 
-                    output = args['output'][0];
+                output = (args['output'].length > 0) ? args['output'][0] : undefined;
 
-                }
+
 
                 // Get class
                 ic = new InferJSCompiler(args);
@@ -120,32 +124,28 @@ export async function main(argv) {
                 break;
 
             // Parses a directory of file
-            case 'parse-dir':
+            case 'parse-directories':
 
-                if (!args.hasOwnProperty('input')) throw new Error(`Missing required argument: <input> for parse-dir`);
+                if (!args.hasOwnProperty('input')) throw new Error(`Missing required argument: <input> for parse-directories`);
 
                 input = args['input'];
 
-                inputOptions = { encoding: 'utf8', recursive: false, allowedExtensions: ["js", "mjs"] };
+                inputOptions = { encoding: 'utf8', recursive: false, fileExtensions: ["js", "mjs"] };
                 if (args.hasOwnProperty('input-options-recursive')) inputOptions['recursive'] = args['input-options-recursive'];
-                if (args.hasOwnProperty('input-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-options-allowedExtensions'];
+                if (args.hasOwnProperty('input-options-file-extensions')) inputOptions['fileExtensions'] = args['input-options-file-extensions'];
 
                 outputOptions = { flag: "wx", module: "script" };
                 if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
-                if (args['output'].length > 0) {
-
-                    output = args['output'][0];
-
-                }
+                output = (args['output'].length > 0) ? args['output'][0] : undefined;
 
                 // Get class
                 ic = new InferJSCompiler(args);
 
                 // Async Parse file 
                 results = await ic.parseDirectories(input, inputOptions, output, outputOptions).catch((err) => {
-                    throw new Error(`Processing action parse-dir had internal error:\n${err}`);
+                    throw new Error(`Processing action parse-directories had internal error:\n${err}`);
                 });
 
 
@@ -181,32 +181,37 @@ export async function main(argv) {
             // Parses a file list
             case 'parse-file-list':
 
-                if (!args.hasOwnProperty('input-file-list')) throw new Error(`Missing required argument: <input-file-list> for parse-file-list`);
+                if (!args.hasOwnProperty('input')) throw new Error(`Missing required argument: <input> for parse-file-list`);
 
                 // Parse List
-                input = args['input-file-list'];
+                input = args['input'];
 
-                inputOptions = { encoding: 'utf8' };
-                if (args.hasOwnProperty('input-file-list-options-recursive')) inputOptions['recursive'] = args['input-file-list-options-recursive'];
-                if (args.hasOwnProperty('input-file-list-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-file-list-options-allowedExtensions'];
+                inputOptions = { encoding: 'utf8', delimiter: "\n" };
+                if (args.hasOwnProperty('input-options-recursive')) inputOptions['recursive'] = args['input-options-recursive'];
+                if (args.hasOwnProperty('input-options-file-extensions')) inputOptions['fileExtensions'] = args['input-options-file-extensions'];
+                if (args.hasOwnProperty('input-options-delimiter')) inputOptions['delimiter'] = args['input-options-delimiter'];
 
                 outputOptions = { flag: "wx", module: "script" };
                 if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
+                output = (args['output'].length > 0) ? args['output'][0] : undefined;
+
+                /*
                 output = args['output-file'];
                 if (!output || typeof output !== 'string' || output.trim() === '') {
 
                     // Output to input file directory
                     output = path.dirname(input) + '/output.js';
                 }
+                */
 
                 // Get class
                 ic = new InferJSCompiler(args);
 
                 // Async Parse file 
                 results = await ic.parseFileList(input, inputOptions, output, outputOptions).catch((err) => {
-                    throw new Error(`Processing action parse-list had internal error:\n${err}`);
+                    throw new Error(`Processing action parse-file-list had internal error:\n${err}`);
                 });
 
                 break;
@@ -219,7 +224,7 @@ export async function main(argv) {
 
         // Write the error to the console.
         curr.verbose = true;
-        console.error()('INFERJS-COMPILER',`${err.message}`);
+        console.error()('INFERJS-COMPILER', `${err.message}`);
         process.exitCode = 1;
 
     }
