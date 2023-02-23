@@ -236,17 +236,7 @@ Distributed under the **MIT** License. See `LICENSE.txt` for more information.
 
 
 <!-- CONTACT -->
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Contact
+## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Support Related
 
  - [**InferJS-Library** Support](https://github.com/Codevendor/inferjs-library/issues) - Direct all questions about the **InferJS-Library** here.
  -  [**InferJS-Compiler** Support](https://github.com/Codevendor/inferjs-compiler/issues) - Direct all questions about the **InferJS-Compiler** here.
-
-
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Acknowledgments
-
-* [Codevendor](https://codevendor.com) - Thanks to developer: **Adam Smith** for creating `InferJS`.
-* [JSDoc](https://jsdoc.app/) - Thanks to **Michael Mathews** and **Gabriel Reid** for creating `JSDoc`. 
