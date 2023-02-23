@@ -10,7 +10,7 @@
 
 ## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Overview
 
-A compiler that processes **JSDoc** comments into an [**InferObject**]() file, for utilizing with the [**InferJS-Library**](https://github.com/Codevendor/inferjs). The [**InferJS-Compiler**](https://github.com/Codevendor/inferjs-compiler) is part of a bigger project called [**InferJS**](https://github.com/Codevendor/inferjs). The compiler can be used for other third party projects, that may need to interpret **JSDoc** comments into **JSON** type files.
+A compiler that processes **JSDoc** comments into an [**InferObject**]() file, for utilizing with the [**InferJS-Library**](https://github.com/Codevendor/inferjs-library). The [**InferJS-Compiler**](https://github.com/Codevendor/inferjs-compiler) is part of a bigger project called [**InferJS**](https://github.com/Codevendor/inferjs). The compiler can be used for other third party projects, that may need to interpret **JSDoc** comments into **JSON** type files.
 
 ### Built With
 * [JSDoc Version 3+](https://jsdoc.app/)
@@ -32,7 +32,7 @@ npm install -g inferjs-compiler
 
 **Optional**: If you would like to download the repo source code with `git`:
 ```sh
-git clone https://github.com/Codevendor/inferjs.git
+git clone https://github.com/Codevendor/inferjs-compiler.git
 ```
 
 
@@ -238,7 +238,7 @@ Distributed under the **MIT** License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Contact
 
- - [**InferJS-Library** Support](https://github.com/Codevendor/inferjs/issues) - Direct all questions about the **InferJS-Library** here.
+ - [**InferJS-Library** Support](https://github.com/Codevendor/inferjs-library/issues) - Direct all questions about the **InferJS-Library** here.
  -  [**InferJS-Compiler** Support](https://github.com/Codevendor/inferjs-compiler/issues) - Direct all questions about the **InferJS-Compiler** here.
 
 
