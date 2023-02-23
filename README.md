@@ -214,7 +214,7 @@ See the [open issues](https://github.com/Codevendor/inferjs-compiler/issues) for
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag `enhancement`.
-Don't forget to give the project a [star]()! Thanks again!
+Don't forget to give the project a [⭐ star](), Thanks again!
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -238,5 +238,5 @@ Distributed under the **MIT** License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Support Related
 
- - [**InferJS-Library** Support](https://github.com/Codevendor/inferjs-library/issues) - Direct all questions about the **InferJS-Library** here.
- -  [**InferJS-Compiler** Support](https://github.com/Codevendor/inferjs-compiler/issues) - Direct all questions about the **InferJS-Compiler** here.
+ - [**InferJS-Library** Documentation](https://github.com/Codevendor/inferjs-compiler/) - Information documentation for the **InferJS-Compiler**.
+ - [**InferJS-Compiler** Issues](https://github.com/Codevendor/inferjs-library/issues) - Direct all questions about the **InferJS-Compiler** here.
