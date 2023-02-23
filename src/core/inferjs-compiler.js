@@ -122,71 +122,6 @@ export class InferJSCompiler extends inferParser {
 
         console.info()('INFERJS-COMPILER', `Finished`);
 
-
-
-        /*
-        // Check if preview mode
-        if (!preview) {
-
-            // Check if output file
-            if (type_of(outputFile) === 'undefined' || outputFile.toString() === '') {
-
-                // Output to console
-                curr.verbose = true;
-                console.log(inferObject);
-                process.exitCode = 0;
-                return;
-
-
-            } else {
-
-                if (!path.isAbsolute(outputFile)) {
-                    outputFile = path.normalize(path.resolve(outputFile));
-                }
-
-            }
-
-            console.info(LABEL.DEFAULT)('WRITE-FILE')(`Writing output file: ${outputFile} ...`);
-
-            // Write file to output file with json
-            const writeResults = await writeFile(outputFile, inferObject, outputFileOptions);
-
-            // Throw err
-            if (!!writeResults.err) throw writeResults.err;
-
-            console.info(LABEL.DEFAULT)('INFERJS-COMPILER')(`Finished`);
-
-        } else {
-
-            // Check if output file
-            if (type_of(outputFile) === 'undefined' || outputFile.toString() === '') {
-
-                outputFile = '-> Stdout';
-
-            } else {
-
-                if (!path.isAbsolute(outputFile)) {
-                    outputFile = path.normalize(path.resolve(outputFile));
-                }
-
-            }
-
-            // Turn back on log
-            curr.verbose = true;
-
-            // Create preview
-            console.info(LABEL.DEFAULT)(`PREVIEW MODE`)('');
-
-            //Input List
-            printTable(inputList.map((item, idx, arr) => { return { idx: idx, "Input File Paths": item }; }));
-
-            // Ouput File
-            printTable([outputFile].map((item, idx, arr) => { return { "Output File Path": item }; }));
-
-
-        }
-        */
-
     }
 
     /**
@@ -252,33 +187,8 @@ export class InferJSCompiler extends inferParser {
         if (type_of(output, true) !== 'undefined' && type_of(output, true) !== 'string') throw new TypeError(`Incorrect type for method parseDirectories, third parameter output, must be an string!`);
         if (type_of(outputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseDirectories, fourth parameter outputOptions, must be an object!`);
 
-
-        // Check for preview
-        //let preview = false;
-        //if (this.args.hasOwnProperty('preview')) {
-
-        //    preview = true;
-
-        // Turn off log verbose
-        //curr.verbose = false;
-        //}
-
-        //console.info()('PARSE-LIST',`Loading inputDirectoryList: ${inputDirectoryList} ...`);
-
         // Resolve and normalize paths
         input = resolvePaths(input);
-
-
-        /*
-        for (let i = 0; i < inputDirectoryList.length; i++) {
-
-            // Check if input is absolute path.
-            if (!path.isAbsolute(inputDirectoryList[i])) {
-                inputDirectoryList[i] = path.normalize(path.resolve(inputDirectoryList[i]));
-            }
-
-        }
-        */
 
         let files = [];
         for (let i = 0; i < input.length; i++) {
@@ -286,10 +196,6 @@ export class InferJSCompiler extends inferParser {
             const list = await this.#getDirectoryList(dir, inputOptions);
             files = files.concat(list);
         }
-
-
-        // Get list of files for parsing
-        //const files = await this.#getDirectoryList(inputDirectory, inputFileOptions);
 
         // Call parseFiles
         await this.parseFiles(files, inputOptions, output, outputOptions);

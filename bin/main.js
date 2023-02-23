@@ -38,6 +38,7 @@ export async function main(argv) {
         f: { name: 'action', value: 'parse-files' },
         d: { name: 'action', value: 'parse-directories' },
         l: { name: 'action', value: 'parse-file-list' },
+        c: { name: 'action', value: 'combine' },
 
         // Options
         h: 'help',
@@ -54,8 +55,6 @@ export async function main(argv) {
     if (args.hasOwnProperty('quiet')) {
         curr.verbose = false;
     }
-
-    //console.(argv);
 
     try {
 
@@ -101,17 +100,15 @@ export async function main(argv) {
 
                 input = args['input'];
 
-                inputOptions = { encoding: 'utf8' };
+                inputOptions = { flag: "r", encoding: "utf8" };
+                if (args.hasOwnProperty('input-options-flags')) inputOptions['flag'] = args['input-options-flags'];
                 if (args.hasOwnProperty('input-options-encoding')) inputOptions['encoding'] = args['input-options-encoding'];
 
                 outputOptions = { flag: "wx", module: "script" };
-                if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
+                if (args.hasOwnProperty('output-options-flags')) outputOptions['flag'] = args['output-options-flags'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
-
                 output = (args['output'].length > 0) ? args['output'][0] : undefined;
-
-
 
                 // Get class
                 ic = new InferJSCompiler(args);
@@ -130,12 +127,13 @@ export async function main(argv) {
 
                 input = args['input'];
 
-                inputOptions = { encoding: 'utf8', recursive: false, fileExtensions: ["js", "mjs"] };
+                inputOptions = { flag: "r", encoding: 'utf8', recursive: false, fileExtensions: ["js", "mjs"] };
+                if (args.hasOwnProperty('input-options-flags')) inputOptions['flag'] = args['input-options-flags'];
                 if (args.hasOwnProperty('input-options-recursive')) inputOptions['recursive'] = args['input-options-recursive'];
                 if (args.hasOwnProperty('input-options-file-extensions')) inputOptions['fileExtensions'] = args['input-options-file-extensions'];
 
                 outputOptions = { flag: "wx", module: "script" };
-                if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
+                if (args.hasOwnProperty('output-options-flags')) outputOptions['flag'] = args['output-options-flags'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
                 output = (args['output'].length > 0) ? args['output'][0] : undefined;
@@ -148,34 +146,6 @@ export async function main(argv) {
                     throw new Error(`Processing action parse-directories had internal error:\n${err}`);
                 });
 
-
-                // if (!args.hasOwnProperty('input-dir')) throw new Error(`Missing required argument: <input-dir> for parse-dir`);
-
-                // input = args['input-dir'];
-
-                // inputOptions = { encoding: 'utf8', recursive: false, allowedExtensions: ["js", "mjs"] };
-                // if (args.hasOwnProperty('input-dir-options-recursive')) inputOptions['recursive'] = args['input-dir-options-recursive'];
-                // if (args.hasOwnProperty('input-dir-options-allowedExtensions')) inputOptions['allowedExtensions'] = args['input-dir-options-allowedExtensions'];
-
-                // outputOptions = { flag: "wx", module: "script" };
-                // if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
-                // if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
-
-                // output = args['output-file'];
-                // if (!output || typeof output !== 'string' || output.trim() === '') {
-
-                //     // Output to input file directory
-                //     output = path.dirname(input) + '/output.js';
-                // }
-
-                // // Get class
-                // ic = new InferJSCompiler(args);
-
-                // // Async Parse file 
-                // results = await ic.parseDirectory(input, inputOptions, output, outputOptions).catch((err) => {
-                //     throw new Error(`Processing action parse-dir had internal error:\n${err}`);
-                // });
-
                 break;
 
             // Parses a file list
@@ -186,25 +156,17 @@ export async function main(argv) {
                 // Parse List
                 input = args['input'];
 
-                inputOptions = { encoding: 'utf8', delimiter: "\n" };
+                inputOptions = { flag: "r", encoding: 'utf8', delimiter: "\n" };
+                if (args.hasOwnProperty('input-options-flags')) inputOptions['flag'] = args['input-options-flags'];
                 if (args.hasOwnProperty('input-options-recursive')) inputOptions['recursive'] = args['input-options-recursive'];
                 if (args.hasOwnProperty('input-options-file-extensions')) inputOptions['fileExtensions'] = args['input-options-file-extensions'];
                 if (args.hasOwnProperty('input-options-delimiter')) inputOptions['delimiter'] = args['input-options-delimiter'];
 
                 outputOptions = { flag: "wx", module: "script" };
-                if (args.hasOwnProperty('output-options-flag')) outputOptions['flag'] = args['output-options-flag'];
+                if (args.hasOwnProperty('output-options-flags')) outputOptions['flag'] = args['output-options-flags'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
 
                 output = (args['output'].length > 0) ? args['output'][0] : undefined;
-
-                /*
-                output = args['output-file'];
-                if (!output || typeof output !== 'string' || output.trim() === '') {
-
-                    // Output to input file directory
-                    output = path.dirname(input) + '/output.js';
-                }
-                */
 
                 // Get class
                 ic = new InferJSCompiler(args);

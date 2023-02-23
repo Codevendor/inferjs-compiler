@@ -36,7 +36,8 @@ ACTIONS
         terminal or specified output file. Delimiter Defaults: to newline character.
 
     -c, --combine
-        Combines multiple InferObject files together, into one file.
+        Combines multiple InferObject files together, outputed to the terminal or specified 
+        output file.
 
 OPTIONS
 
@@ -49,7 +50,7 @@ OPTIONS
     -q, --quiet
         Hide all display information from standard output.
 
-    -s, --Stat
+    -s, --stat
         Displays statistics about total infers parsed from files or directories.
 
     -v, --version
@@ -58,6 +59,9 @@ OPTIONS
 INPUT-OPTIONS
 
     FORMAT: --name = value
+
+    --input-options-flags
+        The file input flags for reading file. Flags: (r, r+, rs, rs+, w+, wx+, a+, ax+)
 
     --input-options-encoding
         The encoding type for the input files. Example: 'UTF8'.
@@ -75,8 +79,9 @@ OUTPUT-OPTIONS
 
     FORMAT: --name = value
 
-    --output-options-module
-        Generates the output InferObject, in a specific module type format. Formats: (esmodule, commonjs, script, json). Defaults to esmodule.
+    --output-options-flags
+        The file output flags for writing file. Flags: (r+, rs+, w, wx, w+, wx+, a, ax, a+, ax+)
 
-    --output-options-flag
-        The file output flags for writing file. 
+    --output-options-module
+        Generates the output InferObject, in a specific module type format. Formats: (esmodule, commonjs, script, json). Defaults to script.
+

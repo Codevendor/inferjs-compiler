@@ -27,6 +27,10 @@ export function buildInferObject(inferObject, moduleType) {
 
                 return `exports.InferObject = ${JSON.stringify(inferObject)};`
             
+            case 'JSON':
+
+                return JSON.stringify(inferObject);
+
             case 'SCRIPT':            
             default:
                 

@@ -15,12 +15,14 @@
             "args": [
                 //"-h",
                 //"-v",
-                "-p",
-                " -f ",
+                //"-p",
+                //"-q",
+                "-f",
                 "./tests/test-comments1.js",
                 "./tests/test-comments2.js",
-                /*"--output-options-flag='w+'",*/
-                //"--output=./tests/inferobjects/test-comments1.io.js"
+                "--output-options-flags='w'",
+                //"--output-options-module='json'",
+                "--output=./tests/inferobjects/test-comments1.io.js"
             ],
             "env" : { "NODE_ENV" : "production" },
         },
@@ -33,12 +35,15 @@
             ],
             "program": "${workspaceFolder}/bin/main.js",
             "args": [
+                //"-h",
+                //"-v",
                 "-p",
-                " -d ",
+                //"-q",
+                "-d",
                 "./tests/",
                 "./src",
                 "--input-options-recursive=true",
-                //"--output-options-flag='w+'",
+                //"--output-options-flags='w+'",
                 "--output=./tests/inferobjects/test-comments1.io.js"
             ],
             "env" : { "NODE_ENV" : "production" },
@@ -52,11 +57,14 @@
             ],
             "program": "${workspaceFolder}/bin/main.js",
             "args": [
+                //"-h",
+                //"-v",
                 "-p",
+                "-q",
                 "-l",
                 "./tests/test-file-list.txt",
                 "--input-options-recursive=true",
-                //"--output-options-flag='w+'",
+                "--output-options-flags='w'",
                 "--output=./tests/inferobjects/test-comments1.io.js"
             ],
             "env" : { "NODE_ENV" : "production" },
