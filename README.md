@@ -1,25 +1,28 @@
-<div id="top"></div>
+[inferjs]: https://github.com/Codevendor/inferjs
+[inferjs-library]: https://github.com/Codevendor/inferjs-library
+[inferjs-compiler]: https://github.com/Codevendor/inferjs-compiler
+[infer-object]: https://github.com/Codevendor/inferjs-library
+[logo]: https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/inferjs-logo.png?raw=true
+[arrow]: https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true
+[library-docs]: https://github.com/Codevendor/inferjs-library/
+[library-issues]: https://github.com/Codevendor/inferjs-library/issues
+[compiler-docs]: https://github.com/Codevendor/inferjs-compiler/
+[compiler-issues]: https://github.com/Codevendor/inferjs-compiler/issues
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/Codevendor/inferjs">
-    <img src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/inferjs-logo.png?raw=true" alt="Logo" height="183px" width="443px" />
-  </a>
-</div>
+![InferJS Library][logo]
 
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Overview
+## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Overview
 
-A compiler that processes **JSDoc** comments into an [**InferObject**]() file, for utilizing with the [**InferJS-Library**](https://github.com/Codevendor/inferjs-library). The [**InferJS-Compiler**](https://github.com/Codevendor/inferjs-compiler) is part of a bigger project called [**InferJS**](https://github.com/Codevendor/inferjs). The compiler can be used for other third party projects, that may need to interpret **JSDoc** comments into **JSON** type files.
+A compiler that processes **JSDoc** comments into an [**InferObject**][infer-object] file, for utilizing with the [**InferJS-Library**][inferjs-library]. The [**InferJS-Compiler**][inferjs-compiler] is part of a bigger project called [**InferJS**][inferjs]. The compiler can be used for other third party projects, that may need to interpret **JSDoc** comments into **JSON** type files.
 
 ### Built With
 * [JSDoc Version 3+](https://jsdoc.app/)
 * [Node.js Version 18+](https://nodejs.org/)
 * [Visual Studio Code](https://code.visualstudio.com/)
 
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Installation
+## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Installation
 
-To install the latest version of [**InferJS-Compiler**](https://github.com/Codevendor/inferjs-compiler) locally with `npm`:
+To install the latest version of [**InferJS-Compiler**][inferjs-compiler] locally with `npm`:
 #### Install: [Locally]()
 ```sh
 npm install inferjs-compiler
@@ -39,9 +42,9 @@ git clone https://github.com/Codevendor/inferjs-compiler.git
 
 
 
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: CLI Usage
+## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: CLI Usage
 
-To use the [**InferJS-Compiler**](https://github.com/Codevendor/inferjs-compiler) from the command line and create [**InferObjects**](), please use the following commands.
+To use the [**InferJS-Compiler**][inferjs-compiler] from the command line and create [**InferObjects**][infer-object], please use the following commands.
 ```sh
 # Global: CLI Run Format - InferJS-Compiler Globally Installed: 
 inferjs-compiler <cmd> <input> <inputOptions> <outputOptions> -o <output>
@@ -56,7 +59,7 @@ node <path/to/inferjs-compiler> <cmd> <input> <inputOptions> <outputOptions> -o 
 
 | Action&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Cmd| Description |
 | :-- | :--: | :-- |               
-| [parse-files]()        | [-f]()          | Parses single or multiple **JavaScript** files, looking for **JSDoc** multi-line comments. Parses the **JSDoc** comments into an [**InferObject**](), that can be outputed to the terminal or specified **output** file. |
+| [parse-files]()        | [-f]()          | Parses single or multiple **JavaScript** files, looking for **JSDoc** multi-line comments. Parses the **JSDoc** comments into an [**InferObject**][infer-object], that can be outputed to the terminal or specified **output** file. |
 
 #### Example - Parse Single Input File to Terminal Output:
 ```sh
@@ -83,7 +86,7 @@ foo@console:~$: inferjs-compiler -f ./test1.js ./test2.js -o ./path/infer-object
 
 | Action&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Cmd| Description |
 | :-- | :--: | :-- |               
-| [parse-directories]()        | [-d]()          | Parses single or multiple directory paths to **JavaScript** files, looking for **JSDoc** multi-line comments. Parses the **JSDoc** comments into an [**InferObject**](), that can be outputed to the terminal or specified **output** file. |
+| [parse-directories]()        | [-d]()          | Parses single or multiple directory paths to **JavaScript** files, looking for **JSDoc** multi-line comments. Parses the **JSDoc** comments into an [**InferObject**][infer-object], that can be outputed to the terminal or specified **output** file. |
 
 #### Example - Parse Single Directory to Terminal Output:
 ```sh
@@ -109,7 +112,7 @@ foo@console:~$: inferjs-compiler -d ./path/directory1 ./path/directory2 -o ./pat
 
 | Action&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Cmd| Description |
 | :-- | :--: | :-- |               
-| [parse-file-list]()        | [-l]()          | Parses a delimited file with **JavaScript** file paths, looking for **JSDoc** multi-line comments per file. Parses the **JSDoc** comments into an [**InferObject**](), that can be outputed to the terminal or specified **output** file. Delimiter Defaults: to `newline` character. |
+| [parse-file-list]()        | [-l]()          | Parses a delimited file with **JavaScript** file paths, looking for **JSDoc** multi-line comments per file. Parses the **JSDoc** comments into an [**InferObject**][infer-object], that can be outputed to the terminal or specified **output** file. Delimiter Defaults: to `newline` character. |
 
 #### Example - Parse File List to Terminal Output:
 ```sh
@@ -125,7 +128,7 @@ foo@console:~$: inferjs-compiler -l ./path/file-list.txt -o ./path/infer-object.
 
 | Action&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Cmd| Description |
 | :-- | :--: | :-- |               
-| [combine]()        | [-c]()          | Combines multiple [**InferObject**]() files together, outputed to the terminal or specified output file.  |
+| [combine]()        | [-c]()          | Combines multiple [**InferObject**][infer-object] files together, outputed to the terminal or specified output file.  |
 
 #### Example - Combine Multiple InferObject Files to Terminal Output:
 ```sh
@@ -147,10 +150,10 @@ foo@console:~$: inferjs-compiler -f ./path/infer-object1.js ./path/infer-object2
 | [--preview]() | [-p]() | Displays information about the files to be processed, without actually executing process. |
 | [--quiet]() | [-q]() | Hide all display information from standard output. |
 | [--stat]() | [-s]() | Displays statistics about total infers parsed from files or directories. |
-| [--version]() | [-v]() | Displays the version number of the [**InferJS-Compiler**](https://github.com/Codevendor/inferjs-compiler). |
+| [--version]() | [-v]() | Displays the version number of the [**InferJS-Compiler**][inferjs-compiler]. |
 
 ### InferJS-Compiler: [INPUT-OPTIONS]()
-| Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
+| Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
 | :-- | :-- |
 | [--input-options-flags]() | The file input flags for reading file. Flags: (`r`, `r+`, `rs`, `rs+`, `w+`, `wx+`, `a+`, `ax+`) |
 | [--input-options-encoding]() | The encoding type for the input files. Example: `UTF8`. |
@@ -162,7 +165,7 @@ foo@console:~$: inferjs-compiler -f ./path/infer-object1.js ./path/infer-object2
 | Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
 | :-- | :-- |
 | [--output-options-flags]() | The file output flags for writing file. Flags: (`r+`, `rs+`, `w`, `wx`, `w+`, `wx+`, `a`, `ax`, `a+`, `ax+`) |
-| [--output-options-module]() | Generates the output [**InferObject**](), in a specific module type format. Formats: (`esmodule`, `commonjs`, `script`, `json`). Defaults to `script`. |
+| [--output-options-module]() | Generates the output [**InferObject**][infer-object], in a specific module type format. Formats: (`esmodule`, `commonjs`, `script`, `json`). Defaults to `script`. |
 
 ### InferJS-Compiler: [NodeJS Read/Write Flags]()
 | Flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Description |
@@ -191,25 +194,25 @@ foo@console:~$: inferjs-compiler -f ./path/infer-object1.js ./path/infer-object2
 
 
 <!-- ROADMAP -->
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Roadmap
-- [[ April 2023 ]()] - Create a plan for text localization with the [**InferJS-Compiler**](https://github.com/Codevendor/inferjs-compiler) repo.
+## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Roadmap
+- [[ April 2023 ]()] - Create a plan for text localization with the [**InferJS-Compiler**][inferjs-compiler] repo.
 - [[ Jan 25, 2023 ]()] - Under Development and Testing
 
 
 
 <!-- CHANGELOG -->
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Change Log
+## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Change Log
 
 - [[ Feb 23, 2023 ]()] - Completed full re-structure. Almost ready for `beta` release.
 
-See the [open issues](https://github.com/Codevendor/inferjs-compiler/issues) for a full list of proposed features (and known issues).
+See the [open issues][compiler-issues] for a full list of proposed features (and known issues).
 
 
 
 
 
 <!-- CONTRIBUTING -->
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Contributing
+## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -227,7 +230,7 @@ Don't forget to give the project a [⭐ star](), Thanks again!
 
 
 <!-- LICENSE -->
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: License
+## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: License
 
 Distributed under the **MIT** License. See `LICENSE.txt` for more information.
 
@@ -236,7 +239,7 @@ Distributed under the **MIT** License. See `LICENSE.txt` for more information.
 
 
 <!-- CONTACT -->
-## <img height="28" width="29" src="https://github.com/Codevendor/inferjs-compiler/blob/main/assets/images/arrowright.png?raw=true" style="float:left;" />&nbsp;&nbsp;InferJS-Compiler: Support Related
+## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Support Related
 
- - [**InferJS-Library** Documentation](https://github.com/Codevendor/inferjs-compiler/) - Information documentation for the **InferJS-Compiler**.
- - [**InferJS-Compiler** Issues](https://github.com/Codevendor/inferjs-library/issues) - Direct all questions about the **InferJS-Compiler** here.
+ - [**InferJS-Compiler** Documentation][compiler-docs] - Information documentation for the **InferJS-Compiler**.
+ - [**InferJS-Compiler** Issues][compiler-issues] - Direct all questions about the **InferJS-Compiler**.
