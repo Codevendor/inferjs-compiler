@@ -17,7 +17,8 @@ A compiler that processes **JSDoc** comments into an [**InferObject**][infer-obj
 
 ### Built With
 * [JSDoc Version 3+](https://jsdoc.app/)
-* [Node.js Version 18+](https://nodejs.org/)
+* [Node.js Version 12+](https://nodejs.org/)
+* [NPM Version 5+](https://www.npmjs.com/)
 * [Visual Studio Code](https://code.visualstudio.com/)
 
 ## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Installation
