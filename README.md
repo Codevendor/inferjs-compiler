@@ -200,18 +200,6 @@ foo@console:~$: inferjs-compiler -f ./path/infer-object1.js ./path/infer-object2
 - [[ Jan 25, 2023 ]()] - Under Development and Testing
 
 
-
-<!-- CHANGELOG -->
-## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Change Log
-
-- [[ Feb 23, 2023 ]()] - Completed full re-structure. Almost ready for `beta` release.
-
-See the [open issues][compiler-issues] for a full list of proposed features (and known issues).
-
-
-
-
-
 <!-- CONTRIBUTING -->
 ## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Contributing
 
