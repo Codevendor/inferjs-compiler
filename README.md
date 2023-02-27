@@ -27,7 +27,7 @@ A compiler that processes **JSDoc** comments into an [**InferObject**][infer-obj
 To install the latest version of [**InferJS-Compiler**][inferjs-compiler] locally with `npm`:
 #### Install: [Locally]()
 ```sh
-npm install inferjs-compiler
+npm install inferjs-compiler --save
 ```
 
 #### Install: [Globally]()
