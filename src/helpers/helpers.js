@@ -7,6 +7,7 @@
 // Helper Regex Constants
 export {
     REG_JS_COMMENTS,
+    REG_REMOVE_STARTING_ASTERISK,
     REG_INFER_ID,
     REG_SPLIT_ON_SPACE,
     REG_INFER_FIX_COMMENTS,

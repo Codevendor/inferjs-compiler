@@ -3,6 +3,9 @@
 // Get js multi line comment tags
 export const REG_JS_COMMENTS = /\/[\*]{2}[^\*]\s{0,}(.*?)\s{0,}\*\//gms;
 
+// Removes starting asterisk if any
+export const REG_REMOVE_STARTING_ASTERISK = /^[\s]{0,}[*]{1}[\s]{0,}/mis;
+
 // Get the @inferid
 export const REG_INFER_ID = /@inferid\s{0,}([^\s]+)/ims;
 
