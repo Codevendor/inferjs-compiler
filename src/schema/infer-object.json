@@ -1,0 +1,10 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://inferjs.com/schema/infer-object.json",
+    "title": "InferObject",
+    "description": "The schema for the InferObject, outputed from the InferJS-Compiler or parsed JSDoc multi-line comments, infers and expectations.",
+    "type": "object",
+    "properties": {
+
+    }
+}
