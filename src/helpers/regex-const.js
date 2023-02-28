@@ -1,7 +1,7 @@
 'use strict';
 
 // Get js multi line comment tags
-export const REG_JS_COMMENTS = /\/\*\*\s{0,}(.*?)\s{0,}\*\//gms;
+export const REG_JS_COMMENTS = /\/[\*]{2}[^\*]\s{0,}(.*?)\s{0,}\*\//gms;
 
 // Get the @inferid
 export const REG_INFER_ID = /@inferid\s{0,}([^\s]+)/ims;
