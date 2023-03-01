@@ -79,6 +79,9 @@ OUTPUT-OPTIONS
 
     FORMAT: --name = value
 
+    --output-options-env
+        The environment variable for the output file. (development, dev, production, prod) Defaults to production.
+
     --output-options-flags
         The file output flags for writing file. Flags: (r+, rs+, w, wx, w+, wx+, a, ax, a+, ax+)
 
