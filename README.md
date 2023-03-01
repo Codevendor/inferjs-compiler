@@ -166,6 +166,7 @@ foo@console:~$: inferjs-compiler -f ./path/infer-object1.js ./path/infer-object2
 ### InferJS-Compiler: [OUPUT-OPTIONS]()
 | Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
 | :-- | :-- |
+| [--output-options-env]() | The environment variable for the output file. (`development`, `dev`, `production`, `prod`) Defaults to `production`. |  
 | [--output-options-flags]() | The file output flags for writing file. Flags: (`r+`, `rs+`, `w`, `wx`, `w+`, `wx+`, `a`, `ax`, `a+`, `ax+`) |
 | [--output-options-module]() | Generates the output [**InferObject**][infer-object], in a specific module type format. Formats: (`esmodule`, `commonjs`, `script`, `json`). Defaults to `script`. |
 
@@ -193,14 +194,6 @@ foo@console:~$: inferjs-compiler -f ./path/infer-object1.js ./path/infer-object2
 
     
         
-
-
-<!-- ROADMAP -->
-## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Roadmap
-- [[ April 2023 ]()] - Create a plan for text localization with the [**InferJS-Compiler**][inferjs-compiler] repo.
-- [[ Jan 25, 2023 ]()] - Under Development and Testing
-
-
 <!-- CONTRIBUTING -->
 ## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Contributing
 

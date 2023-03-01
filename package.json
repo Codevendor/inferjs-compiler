@@ -1,6 +1,6 @@
 {
   "name": "inferjs-compiler",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A compiler that processes JSDoc comments into an InferObject File for utilizing with the InferJS Library.",
   "main": "bin/main.js",
   "type": "module",

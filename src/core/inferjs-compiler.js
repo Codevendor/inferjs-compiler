@@ -95,7 +95,7 @@ export class InferJSCompiler extends inferParser {
             console.info()('PARSE-FILE', `Parsing file: ${file} ...`);
 
             // Parse file to object
-            this.parse(file, readResults.data);
+            this.parse(file, readResults.data, outputOptions);
 
         }
 

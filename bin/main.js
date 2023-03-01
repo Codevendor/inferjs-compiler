@@ -104,9 +104,10 @@ export async function main(argv) {
                 if (args.hasOwnProperty('input-options-flags')) inputOptions['flag'] = args['input-options-flags'];
                 if (args.hasOwnProperty('input-options-encoding')) inputOptions['encoding'] = args['input-options-encoding'];
 
-                outputOptions = { flag: "wx", module: "script" };
+                outputOptions = { flag: "wx", module: "script", env: "production" };
                 if (args.hasOwnProperty('output-options-flags')) outputOptions['flag'] = args['output-options-flags'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
+                if (args.hasOwnProperty('output-options-env')) outputOptions['env'] = args['output-options-env'];
 
                 output = (args['output'].length > 0) ? args['output'][0] : undefined;
 
@@ -132,9 +133,10 @@ export async function main(argv) {
                 if (args.hasOwnProperty('input-options-recursive')) inputOptions['recursive'] = args['input-options-recursive'];
                 if (args.hasOwnProperty('input-options-file-extensions')) inputOptions['fileExtensions'] = args['input-options-file-extensions'];
 
-                outputOptions = { flag: "wx", module: "script" };
+                outputOptions = { flag: "wx", module: "script", env: "production" };
                 if (args.hasOwnProperty('output-options-flags')) outputOptions['flag'] = args['output-options-flags'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
+                if (args.hasOwnProperty('output-options-env')) outputOptions['env'] = args['output-options-env'];
 
                 output = (args['output'].length > 0) ? args['output'][0] : undefined;
 
@@ -162,9 +164,10 @@ export async function main(argv) {
                 if (args.hasOwnProperty('input-options-file-extensions')) inputOptions['fileExtensions'] = args['input-options-file-extensions'];
                 if (args.hasOwnProperty('input-options-delimiter')) inputOptions['delimiter'] = args['input-options-delimiter'];
 
-                outputOptions = { flag: "wx", module: "script" };
+                outputOptions = { flag: "wx", module: "script", env: "production" };
                 if (args.hasOwnProperty('output-options-flags')) outputOptions['flag'] = args['output-options-flags'];
                 if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
+                if (args.hasOwnProperty('output-options-env')) outputOptions['env'] = args['output-options-env'];
 
                 output = (args['output'].length > 0) ? args['output'][0] : undefined;
 
