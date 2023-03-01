@@ -22,6 +22,7 @@
                 "./tests/test-comments2.js",
                 "--output-options-flags='w'",
                 //"--output-options-module='json'",
+                //"--output-options-env='development'",
                 "--output=./tests/inferobjects/test-comments1.io.js"
             ],
             "env" : { "NODE_ENV" : "production" },
