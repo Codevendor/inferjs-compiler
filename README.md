@@ -194,14 +194,6 @@ foo@console:~$: inferjs-compiler -f ./path/infer-object1.js ./path/infer-object2
 
     
         
-
-
-<!-- ROADMAP -->
-## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Roadmap
-- [[ April 2023 ]()] - Create a plan for text localization with the [**InferJS-Compiler**][inferjs-compiler] repo.
-- [[ Jan 25, 2023 ]()] - Under Development and Testing
-
-
 <!-- CONTRIBUTING -->
 ## ![Heading][arrow]&nbsp;&nbsp;InferJS-Compiler: Contributing
 
