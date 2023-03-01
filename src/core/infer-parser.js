@@ -3,6 +3,7 @@ import { COLOR, LABEL } from "curry-console";
 
 import {
     REG_JS_COMMENTS,
+    REG_REMOVE_STARTING_ASTERISK,
     REG_INFER_ID,
     REG_SPLIT_ON_SPACE,
     REG_INFER_FIX_COMMENTS,
@@ -87,8 +88,9 @@ export class inferParser {
      * Parses the data into the private field #infers
      * @param {string} filePath - The file path
      * @param {string} fileData - The file data
+     * @param {object} outputOptions - The output options.
      */
-    parse(filePath, fileData) {
+    parse(filePath, fileData, outputOptions) {
 
         // Variables
         let m;
@@ -101,8 +103,8 @@ export class inferParser {
                 REG_JS_COMMENTS.lastIndex++;
             }
 
-            m.forEach((match, groupIndex) => {
-                if (groupIndex === 1) { this.#parseInfer(filePath, fileData, match) };
+            m.forEach((jsComment, groupIndex) => {
+                if (groupIndex === 1) { this.#parseComment(filePath, fileData, jsComment, outputOptions) };
             });
         }
 
@@ -110,17 +112,18 @@ export class inferParser {
 
     /**
      * Parses a js comment for infers.
-     * @param {*} filePath - The path of the file being parsed.
-     * @param {*} fileData - The data of the file being parsed.
-     * @param {*} jsComment - The js comment being parsed.
+     * @param {string} filePath - The file path where the comment was found.
+     * @param {string} fileData - The full file data from the file.
+     * @param {string} jsComment - The js comment being parsed.
+     * @param {object} outputOptions - The output options.
      */
-    #parseInfer(filePath, fileData, jsComment) {
+    #parseComment(filePath, fileData, jsComment, outputOptions) {
 
         // Parse the @inferid
         const m = jsComment.match(REG_INFER_ID);
         if (!m || m.length !== 2 || m[1].trim() === '') {
             const lineNumber = getLineNumber(fileData, jsComment);
-            console.warn()('INFERJS-COMPILER',`JS Comment missing tag @inferid on Line: ${lineNumber}\nFile: ${filePath}\nComment:\n${jsComment}`);
+            console.warn()('INFERJS-COMPILER', `JS Comment missing tag @inferid on Line: ${lineNumber}\nFile: ${filePath}\nComment:\n${jsComment}`);
             return;
         }
 
@@ -139,11 +142,18 @@ export class inferParser {
         // Get line of infer
         const lineNumber2 = getLineNumber(fileData, jsComment) + (getLineNumber(jsComment, m[0]) - 1);
 
-        // Add to infers
-        this.#source.infers[inferid] = { file: filePath, line: lineNumber2, "@description": "", "@param": {} };
+        // Check environment fix file path
+        let file = filePath;
+        if (outputOptions.env.toLowerCase().startsWith('p')) {
+            file = file.split(path.sep);
+            file = file.pop();
+        }
 
-        // Split into lines for parsing
-        const lines = jsComment.split("\n").map(item => item.trim());
+        // Add to infers
+        this.#source.infers[inferid] = { file: file, line: lineNumber2, "@description": "", "@param": {} };
+
+        // Split into lines for parsing and remove starting * if one.
+        const lines = jsComment.split("\n").map(item => item.replace(REG_REMOVE_STARTING_ASTERISK, '').trim());
 
         // Declare loop variables
         let match, line, line2, rawLine, tag, dvalue;
@@ -160,10 +170,7 @@ export class inferParser {
             match = undefined;
 
             // Trim every line
-            line = lines[i].trim();
-
-            // Check if first character is *, remove
-            if (line.length > 0 && line[0] === '*') line = line.slice(1).trimStart();
+            line = lines[i];
 
             // For raw line
             rawLine = line;
@@ -207,11 +214,19 @@ export class inferParser {
 
             }
 
-            // Switch tag for parsing
+            // Switch tag for parsing parameters
             switch (tag) {
 
                 // Do Nothing
                 case undefined: break;
+
+                case '@inferid':
+
+                    // Set into array
+                    this.#source.infers[inferid][tag] = inferid;
+
+                    break;
+
 
                 case '@author':
 
@@ -308,7 +323,6 @@ export class inferParser {
                 case '@this':
                 case '@variation':
                 case '@version':
-                case '@inferid':
 
                     // Set into array
                     this.#source.infers[inferid][tag] = tagArr.shift().trim();
