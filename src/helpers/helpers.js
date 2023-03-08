@@ -17,7 +17,6 @@ export {
     REG_INFER_PARSE_TAG_BORROWS,
     REG_INFER_PARSE_TAG_ENUM,
     REG_INFER_PARSE_TAG_MEMBER,
-    REG_INFER_PARSE_TAG_RETURNS,
     REG_INFER_PARSE_TAG_TYPE,
     REG_INFER_PARSE_TAG_TYPEDEF,
     REG_INFER_PARSE_TAG_YIELDS
@@ -35,5 +34,7 @@ export { parseArgv } from "./parse-argv.js";
 export { readDir } from "./read-dir.js";
 export { readFile } from "./read-file.js";
 export { resolvePaths } from "./resolve-paths.js";
+export { ripTypes } from "./rip-types.js";
+export { setValue } from "./set-value.js";
 export { type_of } from "./type-of.js";
 export { writeFile } from "./write-file.js";

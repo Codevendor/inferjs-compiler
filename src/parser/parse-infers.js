@@ -1,5 +1,8 @@
 'use strict';
 
+// Imports
+import { setValue } from "../helpers/helpers.js";
+
 /**
  * Parses a string of infers into an object.
  * @param {string} text - The string to examine for infers. 
@@ -8,6 +11,9 @@ export function parseInfers(text) {
 
     // The built obj
     let obj = {};
+
+    // Temp Obj
+    let temp = {};
 
     try {
 
@@ -53,7 +59,7 @@ export function parseInfers(text) {
 
         /** Checks if end of line. */
         const eol = () => {
-            return ["\n", "\r"].includes(buf[idx]);
+            return ["\n", "\r"].includes(peek());
         };
 
         /** Checks for end of text. */
@@ -68,6 +74,35 @@ export function parseInfers(text) {
         const jump = (text) => {
             idx = buf.indexOf(text, idx);
         };
+
+        /** 
+         * Checks if next line is param or continued description. 
+         * @returns {boolean} - Whether param is on next line.
+         */
+        const peekParam = () => {
+
+            const idx2 = idx + 1;
+            let pos = [];
+            const pos1 = buf.indexOf("\r", idx2);
+            const pos2 = buf.indexOf("\n", idx2);
+
+            if (pos1 > -1) pos.push(pos1);
+            if (pos2 > -1) pos.push(pos2);
+
+            pos = Math.min(...pos);
+
+            let line = buf.substring(idx2, pos).trim();
+
+            // check first char
+            line = line.slice(1).trim()[0];
+
+            if(line === '@') return true;
+
+            return false;
+            //console.log(line);
+
+
+        }
 
         /** 
          * Expects a char and eats it or throws an error if doesnt exist.
@@ -247,7 +282,8 @@ export function parseInfers(text) {
                         continue;
 
                     // Optional parameter close
-                    case ']': return obj;
+                    case ']':
+                        return obj;
 
                     // Assign defaut value
                     case '=':
@@ -293,6 +329,62 @@ export function parseInfers(text) {
 
         }
 
+        // Parses the param description.
+        const parseParamDesc = () => {
+
+            let desc = '';
+
+            // The first character
+            let first = true;
+
+            // Skip
+            skipSpace();
+
+            while (!eof()) {
+
+                switch (peek()) {
+
+                    case '-':
+
+                        if (first) { 
+                            first = false; 
+                            next();
+                            skipSpace();
+                            continue; 
+                        }
+
+                        // Record now
+                        desc += peek();
+
+                        break;
+
+                    case "\r":
+                    case "\n":
+                    
+                        if(peekParam()){ 
+
+                            return desc;
+
+                        }
+
+                        break;
+
+                    default:
+
+                        // Check for end of line 
+                        if (eol()) return desc;
+
+                        // Record
+                        desc += peek();
+
+                        break;
+
+                }
+
+                next();
+            }
+        };
+
         // Parse @param
         const parseTagParam = () => {
 
@@ -311,18 +403,37 @@ export function parseInfers(text) {
             expectChar('}');
 
             // Parse Name
-            const name = parseParamName();
+            const nameObj = parseParamName();
+
+            // Parse Tag @param Description.
+            const desc = parseParamDesc();
 
 
+            // Create @param object
+            setValue(temp, ['@param'], {});
+            setValue(temp, ['@param', nameObj.name], {});
+            setValue(temp, ['@param', nameObj.name, 'description'], desc);
+            setValue(temp, ['@param', nameObj.name, 'optional'], nameObj.optional);
+            if (nameObj.hasOwnProperty('default')) {
+                setValue(temp, ['@param', nameObj.name, 'default'], nameObj.default);
+            }
 
-            //console.log("Next Char:", peek());
+            // Create @param types
+            setValue(temp, ['@param', nameObj.name, 'types'], {});
+            types.map(type => {
+
+                setValue(temp, ['@param', nameObj.name, 'types', type], {});
+
+                // Create @param types infers
+                setValue(temp, ['@param', nameObj.name, 'types', type, 'infers'], {});
+            });
 
         };
 
         // Parses the tag if not implemented.
         const parseTagNotImplemented = (tag) => {
 
-            obj[tag] = new SyntaxError(`Block tag(${tag}) not implemented!`);
+            temp[tag] = new SyntaxError(`Block tag(${tag}) not implemented!`);
 
             // Read until eol
             while (!eof()) {
@@ -372,10 +483,11 @@ export function parseInfers(text) {
         };
 
 
-        // Parse the line
-        const parseLines = () => {
+        // Parse the comment
+        const parseComment = () => {
 
-            let description = '';
+            // Reset temp
+            temp = { description: '', '@param': {} };
 
             while (!eof()) {
 
@@ -401,13 +513,13 @@ export function parseInfers(text) {
                         if (commentEnd()) {
 
                             // Add description to object
-                            obj['description'] = description;
+                            //temp.description = description;
 
                             return;
                         }
 
                         // Add to description
-                        description += peek();
+                        temp.description += peek();
 
                         break;
 
@@ -415,7 +527,7 @@ export function parseInfers(text) {
                     default:
 
                         // Add to description
-                        description += ((description === '') ? "" : "\n") + parseDesc();
+                        temp.description += ((temp.description === '') ? "" : "\n") + parseDesc();
 
                         break;
                 }
@@ -437,10 +549,8 @@ export function parseInfers(text) {
                 // Make sure not three ***
                 if (peek() !== '*') {
                     // Parse Lines
-                    parseLines();
+                    parseComment();
                 }
-
-                return;
 
                 next();
 
@@ -453,6 +563,7 @@ export function parseInfers(text) {
 
     } catch (err) {
 
+        console.log(err);
         return err;
 
     }
