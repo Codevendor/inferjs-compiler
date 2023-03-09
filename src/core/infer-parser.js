@@ -270,6 +270,7 @@ export class inferParser {
             switch (tag) {
 
                 // @abstract
+                case '@virtual':
                 case '@abstract': tagAbstract(this, filePath, inferid, line ); break;
 
                 // @access
@@ -282,6 +283,7 @@ export class inferParser {
                 case '@async': tagAsync(this, filePath, inferid, line ); break;
 
                 // @augments
+                case '@extends':
                 case '@augments': tagAugments(this, filePath, inferid, line ); break;
 
                 // @author
@@ -297,9 +299,11 @@ export class inferParser {
                 case '@classdesc': tagClassDesc(this, filePath, inferid, line ); break;
 
                 // @class
+                case '@constructor':
                 case '@class': tagClass(this, filePath, inferid, line ); break;
 
                 // @constant
+                case '@const':
                 case '@constant': tagConstant(this, filePath, inferid, line ); break;
 
                 // @constructs
@@ -309,12 +313,14 @@ export class inferParser {
                 case '@copyright': tagCopyright(this, filePath, inferid, line ); break;
 
                 // @defaults
+                case '@defaultvalue':
                 case '@default': tagDefault(this, filePath, inferid, line ); break;
 
                 // @deprecated
                 case '@deprecated': tagDeprecated(this, filePath, inferid, line ); break;
 
                 // @description
+                case '@desc':
                 case '@description': tagDescription(this, filePath, inferid, line ); break;
 
                 // @enum
@@ -330,15 +336,21 @@ export class inferParser {
                 case '@exports': tagExports(this, filePath, inferid, line ); break;
 
                 // @external
+                case '@host':
                 case '@external': tagExternal(this, filePath, inferid, line ); break;
 
                 // @file
+                case '@fileoverview':
+                case '@overview':
                 case '@file': tagFile(this, filePath, inferid, line ); break;
 
                 // @fires
+                case '@emits':
                 case '@fires': tagFires(this, filePath, inferid, line ); break;
 
                 // @function
+                case '@func':
+                case '@method':
                 case '@function': tagFunction(this, filePath, inferid, line ); break;
 
                 // @generator
@@ -393,6 +405,7 @@ export class inferParser {
                 case '@memberof': tagMemberOf(this, filePath, inferid, line ); break;
 
                 // @member
+                case '@var':
                 case '@member': tagMember(this, filePath, inferid, line ); break;
 
                 // @mixes
@@ -417,12 +430,15 @@ export class inferParser {
                 case '@package': tagPackage(this, filePath, inferid, line ); break;
 
                 // @param
+                case '@arg':
+                case '@argument':
                 case '@param': tagParam(this, filePath, inferid, line); break;
 
                 // @private
                 case '@private': tagPrivate(this, filePath, inferid, line ); break;
 
                 // @property
+                case '@prop':
                 case '@property': tagProperty(this, filePath, inferid, line ); break;
 
                 // @protected
@@ -457,6 +473,7 @@ export class inferParser {
                 case '@this': tagThis(this, filePath, inferid, line ); break;
 
                 // @throws
+                case '@exception':
                 case '@throws': tagThrows(this, filePath, inferid, line ); break;
 
                 // @todo
@@ -478,6 +495,7 @@ export class inferParser {
                 case '@version': tagVersion(this, filePath, inferid, line ); break;
 
                 // @yields
+                case '@yield':
                 case '@yields': tagYields(this, filePath, inferid, line ); break;
 
                 // No tag
