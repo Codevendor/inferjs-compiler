@@ -16,7 +16,7 @@ curr.profile = true;
 curr.verbose = true;
 curr.defaultsLog = [];
 curr.defaultsInfo = [LABEL.WHITE, LABEL.BG_BLUE, COLOR.BLUE];
-curr.defaultsWarn = [LABEL.WHITE, LABEL.BG_YELLOW, COLOR.YELLOW];
+curr.defaultsWarn = [LABEL.BLACK, LABEL.BG_YELLOW, COLOR.YELLOW];
 curr.defaultsError = [LABEL.WHITE, LABEL.BG_RED, COLOR.RED];
 
 /**
