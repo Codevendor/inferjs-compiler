@@ -6,6 +6,7 @@
 
 // Helper Regex Constants
 export {
+    REG_NEWLINES,
     REG_JS_COMMENTS,
     REG_REMOVE_STARTING_ASTERISK,
     REG_INFER_ID,
@@ -26,6 +27,7 @@ export {
 // Helper methods
 export { buildInferObject } from "./build-infer-object.js";
 export { fileExists } from "./file-exists.js";
+export { fixComments } from "./fix-comments.js";
 export { getLineNumber } from "./get-line-number.js";
 export { jsonLoader } from "./json-loader.js";
 export { loadMeta } from "./load-meta.js";

@@ -1,9 +1,9 @@
 import path from "node:path";
 import { COLOR, LABEL } from "curry-console";
 
+// Helpers
 import {
     REG_JS_COMMENTS,
-    REG_REMOVE_STARTING_ASTERISK,
     REG_INFER_ID,
     REG_SPLIT_ON_SPACE,
     REG_INFER_FIX_COMMENTS,
@@ -13,13 +13,86 @@ import {
     REG_INFER_PARSE_TAG_BORROWS,
     REG_INFER_PARSE_TAG_ENUM,
     REG_INFER_PARSE_TAG_MEMBER,
-    REG_INFER_PARSE_TAG_RETURNS,
     REG_INFER_PARSE_TAG_TYPE,
     REG_INFER_PARSE_TAG_TYPEDEF,
     REG_INFER_PARSE_TAG_YIELDS,
     getLineNumber,
-    type_of
+    fixComments,
+    type_of,
+    ripTypes
 } from "../helpers/helpers.js";
+
+// Tags
+import {
+    tagAbstract,
+    tagAccess,
+    tagAlias,
+    tagAsync,
+    tagAugments,
+    tagAuthor,
+    tagBorrows,
+    tagCallback,
+    tagClass,
+    tagClassDesc,
+    tagConstant,
+    tagConstructs,
+    tagCopyright,
+    tagDefault,
+    tagDeprecated,
+    tagDescription,
+    tagEnum,
+    tagEvent,
+    tagExample,
+    tagExports,
+    tagExternal,
+    tagFile,
+    tagFires,
+    tagFunction,
+    tagGenerator,
+    tagGlobal,
+    tagHideConstructor,
+    tagIgnore,
+    tagImplements,
+    tagInfer,
+    tagInferId,
+    tagInheritDoc,
+    tagInner,
+    tagInstance,
+    tagInterface,
+    tagKind,
+    tagLends,
+    tagLicense,
+    tagLink,
+    tagListens,
+    tagMember,
+    tagMemberOf,
+    tagMixes,
+    tagModule,
+    tagName,
+    tagNameSpace,
+    tagOverride,
+    tagPackage,
+    tagParam,
+    tagPrivate,
+    tagProperty,
+    tagProtected,
+    tagPublic,
+    tagReadOnly,
+    tagRequires,
+    tagReturns,
+    tagSee,
+    tagSince,
+    tagStatic,
+    tagSummary,
+    tagThis,
+    tagThrows,
+    tagTodo,
+    tagTutorial,
+    tagType,
+    tagTypeDef,
+    tagVariation,
+    tagYields
+} from "../tags/tags.js";
 
 /**
  * The inferParser class
@@ -56,6 +129,9 @@ export class inferParser {
 
     /** Gets the parsed source results. */
     get source() { return this.#source; }
+
+    /** Gets the parsed source results. */
+    set source(value) { this.#source = value; }
 
     /**
      * Constructor for the inferParser.
@@ -152,8 +228,12 @@ export class inferParser {
         // Add to infers
         this.#source.infers[inferid] = { file: file, line: lineNumber2, "@description": "", "@param": {} };
 
+        // Fixup comments
+        const lines = fixComments(jsComment);
+
+
         // Split into lines for parsing and remove starting * if one.
-        const lines = jsComment.split("\n").map(item => item.replace(REG_REMOVE_STARTING_ASTERISK, '').trim());
+        //const lines = jsComment.split("\n").map(item => item.replace(REG_REMOVE_STARTING_ASTERISK, '').trim());
 
         // Declare loop variables
         let match, line, line2, rawLine, tag, dvalue;
@@ -417,12 +497,13 @@ export class inferParser {
 
                 case '@exception':
                 case '@throws':
-                case '@returns':
 
-                    match = line.match(REG_INFER_PARSE_TAG_RETURNS);
-                    if (!match || match.length !== 3) throw new SyntaxError();
-                    this.#source.infers[inferid][tag] = { type: match[1], "description": match[2].replace(REG_INFER_FIX_COMMENTS, "\n") };
+
+
                     break;
+
+                case '@return':
+                case '@returns': tagReturns(this, line, inferid, tag); break;
 
                 case '@description':
                 case '@desc':

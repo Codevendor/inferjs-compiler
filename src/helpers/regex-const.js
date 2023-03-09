@@ -1,5 +1,8 @@
 'use strict';
 
+// Newline split
+export const REG_NEWLINES = /\r?\n/g;
+
 // Get js multi line comment tags
 export const REG_JS_COMMENTS = /\/[\*]{2}[^\*]\s{0,}(.*?)\s{0,}\*\//gms;
 
@@ -32,9 +35,6 @@ export const REG_INFER_PARSE_TAG_ENUM = /@enum\s{1,}\{{0,1}([^}{]+)\}{0,1}/ims;
 
 // Parse Member 
 export const REG_INFER_PARSE_TAG_MEMBER = /@member\s{1,}\{{0,1}([^}{]+)\}{0,1}\s{0,}([^\s]+)?/ims;
-
-// Parse returns
-export const REG_INFER_PARSE_TAG_RETURNS = /@returns\s{1,}\{{0,1}([^}{]+)\}{0,1}\s{0,}-{0,1}\s{0,}(.*)?/ims;
 
 // Parse type
 export const REG_INFER_PARSE_TAG_TYPE = /@type\s{1,}\{{0,1}\({0,1}([^}{)(]+)\){0,1}\}{0,1}/ims;
