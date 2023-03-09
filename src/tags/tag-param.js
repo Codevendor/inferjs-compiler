@@ -3,7 +3,7 @@
 import { REG_INFER_PARSE_TAG_PARAM_LINE, setValue } from "../helpers/helpers.js";
 
 /**
- * 
+ * Parses the tag @param.
  * @param {object} parser - The parser class.
  * @param {string} filePath - The filepath of where the line exists.
  * @param {string} inferid = The inferid for the comment.

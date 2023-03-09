@@ -270,218 +270,218 @@ export class inferParser {
             switch (tag) {
 
                 // @abstract
-                case '@abstract': tagAbstract(); break;
+                case '@abstract': tagAbstract(this, filePath, inferid, line ); break;
 
                 // @access
-                case '@access': tagAccess(); break;
+                case '@access': tagAccess(this, filePath, inferid, line ); break;
 
                 // @alias
-                case '@alias': tagAlias(); break;
+                case '@alias': tagAlias(this, filePath, inferid, line ); break;
 
                 // @async
-                case '@async': tagAsync(); break;
+                case '@async': tagAsync(this, filePath, inferid, line ); break;
 
                 // @augments
-                case '@augments': tagAugments(); break;
+                case '@augments': tagAugments(this, filePath, inferid, line ); break;
 
                 // @author
-                case '@author': tagAuthor(); break;
+                case '@author': tagAuthor(this, filePath, inferid, line ); break;
 
                 // @borrows
-                case '@borrows': tagBorrows(); break;
+                case '@borrows': tagBorrows(this, filePath, inferid, line ); break;
 
                 // @callback
-                case '@callback': tagCallback(); break;
+                case '@callback': tagCallback(this, filePath, inferid, line ); break;
 
                 // @classdesc
-                case '@classdesc': tagClassDesc(); break;
+                case '@classdesc': tagClassDesc(this, filePath, inferid, line ); break;
 
                 // @class
-                case '@class': tagClass(); break;
+                case '@class': tagClass(this, filePath, inferid, line ); break;
 
                 // @constant
-                case '@constant': tagConstant(); break;
+                case '@constant': tagConstant(this, filePath, inferid, line ); break;
 
                 // @constructs
-                case '@constructs': tagConstructs(); break;
+                case '@constructs': tagConstructs(this, filePath, inferid, line ); break;
 
                 // @copyright
-                case '@copyright': tagCopyright(); break;
+                case '@copyright': tagCopyright(this, filePath, inferid, line ); break;
 
                 // @defaults
-                case '@default': tagDefault(); break;
+                case '@default': tagDefault(this, filePath, inferid, line ); break;
 
                 // @deprecated
-                case '@deprecated': tagDeprecated(); break;
+                case '@deprecated': tagDeprecated(this, filePath, inferid, line ); break;
 
                 // @description
-                case '@description': tagDescription(); break;
+                case '@description': tagDescription(this, filePath, inferid, line ); break;
 
                 // @enum
-                case '@enum': tagEnum(); break;
+                case '@enum': tagEnum(this, filePath, inferid, line ); break;
 
                 // @event
-                case '@event': tagEvent(); break;
+                case '@event': tagEvent(this, filePath, inferid, line ); break;
 
                 // @example
-                case '@example': tagExample(); break;
+                case '@example': tagExample(this, filePath, inferid, line ); break;
 
                 // @exports
-                case '@exports': tagExports(); break;
+                case '@exports': tagExports(this, filePath, inferid, line ); break;
 
                 // @external
-                case '@external': tagExternal(); break;
+                case '@external': tagExternal(this, filePath, inferid, line ); break;
 
                 // @file
-                case '@file': tagFile(); break;
+                case '@file': tagFile(this, filePath, inferid, line ); break;
 
                 // @fires
-                case '@fires': tagFires(); break;
+                case '@fires': tagFires(this, filePath, inferid, line ); break;
 
                 // @function
-                case '@function': tagFunction(); break;
+                case '@function': tagFunction(this, filePath, inferid, line ); break;
 
                 // @generator
-                case '@generator': tagGenerator(); break;
+                case '@generator': tagGenerator(this, filePath, inferid, line ); break;
 
                 // @global
-                case '@global': tagGlobal(); break;
+                case '@global': tagGlobal(this, filePath, inferid, line ); break;
 
                 // @hideconstructor
-                case '@hideconstructor': tagHideConstructor(); break;
+                case '@hideconstructor': tagHideConstructor(this, filePath, inferid, line ); break;
 
                 // @ignore
-                case '@ignore': tagIgnore(); break;
+                case '@ignore': tagIgnore(this, filePath, inferid, line ); break;
 
                 // @implements
-                case '@implements': tagImplements(); break;
+                case '@implements': tagImplements(this, filePath, inferid, line ); break;
 
                 // @inferid
-                case '@inferid': tagInferId(); break;
+                case '@inferid': tagInferId(this, filePath, inferid, line ); break;
 
                 // @infer
-                case '@infer': tagInfer(); break;
+                case '@infer': tagInfer(this, filePath, inferid, line ); break;
 
                 // @inheritdoc
-                case '@inheritdoc': tagInheritDoc(); break;
+                case '@inheritdoc': tagInheritDoc(this, filePath, inferid, line ); break;
 
                 // @inner
-                case '@inner': tagInner(); break;
+                case '@inner': tagInner(this, filePath, inferid, line ); break;
 
                 // @instance
-                case '@instance': tagInstance(); break;
+                case '@instance': tagInstance(this, filePath, inferid, line ); break;
 
                 // @interface
-                case '@interface': tagInterface(); break;
+                case '@interface': tagInterface(this, filePath, inferid, line ); break;
 
                 // @kind
-                case '@kind': tagKind(); break;
+                case '@kind': tagKind(this, filePath, inferid, line ); break;
 
                 // @lends
-                case '@lends': tagLends(); break;
+                case '@lends': tagLends(this, filePath, inferid, line ); break;
 
                 // @license
-                case '@license': tagLicense(); break;
+                case '@license': tagLicense(this, filePath, inferid, line ); break;
 
                 // @link
-                case '@link': tagLink(); break;
+                case '@link': tagLink(this, filePath, inferid, line ); break;
 
                 // @listens
-                case '@listens': tagListens(); break;
+                case '@listens': tagListens(this, filePath, inferid, line ); break;
 
                 // @memberof
-                case '@memberof': tagMemberOf(); break;
+                case '@memberof': tagMemberOf(this, filePath, inferid, line ); break;
 
                 // @member
-                case '@member': tagMember(); break;
+                case '@member': tagMember(this, filePath, inferid, line ); break;
 
                 // @mixes
-                case '@mixes': tagMixes(); break;
+                case '@mixes': tagMixes(this, filePath, inferid, line ); break;
 
                 // @mixin
-                case '@mixin': tagMixin(); break;
+                case '@mixin': tagMixin(this, filePath, inferid, line ); break;
 
                 // @module
-                case '@module': tagModule(); break;
+                case '@module': tagModule(this, filePath, inferid, line ); break;
 
                 // @name
-                case '@name': tagName(); break;
+                case '@name': tagName(this, filePath, inferid, line ); break;
 
                 // @namespace
-                case '@namespace': tagNameSpace(); break;
+                case '@namespace': tagNameSpace(this, filePath, inferid, line ); break;
 
                 // @override
-                case '@override': tagOverride(); break;
+                case '@override': tagOverride(this, filePath, inferid, line ); break;
 
                 // @package
-                case '@package': tagPackage(); break;
+                case '@package': tagPackage(this, filePath, inferid, line ); break;
 
                 // @param
                 case '@param': tagParam(this, filePath, inferid, line); break;
 
                 // @private
-                case '@private': tagPrivate(); break;
+                case '@private': tagPrivate(this, filePath, inferid, line ); break;
 
                 // @property
-                case '@property': tagProperty(); break;
+                case '@property': tagProperty(this, filePath, inferid, line ); break;
 
                 // @protected
-                case '@protected': tagProtected(); break;
+                case '@protected': tagProtected(this, filePath, inferid, line ); break;
 
                 // @public
-                case '@public': tagPublic(); break;
+                case '@public': tagPublic(this, filePath, inferid, line ); break;
 
                 // @readonly
-                case '@readonly': tagReadOnly(); break;
+                case '@readonly': tagReadOnly(this, filePath, inferid, line ); break;
 
                 // @requires
-                case '@requires': tagRequires(); break;
+                case '@requires': tagRequires(this, filePath, inferid, line ); break;
 
                 // @returns
                 case '@return':
-                case '@returns': tagReturns(); break;
+                case '@returns': tagReturns(this, filePath, inferid, line ); break;
 
                 // @see
-                case '@see': tagSee(); break;
+                case '@see': tagSee(this, filePath, inferid, line ); break;
 
                 // @since
-                case '@since': tagSince(); break;
+                case '@since': tagSince(this, filePath, inferid, line ); break;
 
                 // @static
-                case '@static': tagStatic(); break;
+                case '@static': tagStatic(this, filePath, inferid, line ); break;
 
                 // @summary
-                case '@summary': tagSummary(); break;
+                case '@summary': tagSummary(this, filePath, inferid, line ); break;
 
                 // @this
-                case '@this': tagThis(); break;
+                case '@this': tagThis(this, filePath, inferid, line ); break;
 
                 // @throws
-                case '@throws': tagThrows(); break;
+                case '@throws': tagThrows(this, filePath, inferid, line ); break;
 
                 // @todo
-                case '@todo': tagTodo(); break;
+                case '@todo': tagTodo(this, filePath, inferid, line ); break;
 
                 // @tutorial
-                case '@tutorial': tagTutorial(); break;
+                case '@tutorial': tagTutorial(this, filePath, inferid, line ); break;
 
                 // @typedef
-                case '@typedef': tagTypeDef(); break;
+                case '@typedef': tagTypeDef(this, filePath, inferid, line ); break;
 
                 // @type
-                case '@type': tagType(); break;
+                case '@type': tagType(this, filePath, inferid, line ); break;
 
                 // @variation
-                case '@variation': tagVariation(); break;
+                case '@variation': tagVariation(this, filePath, inferid, line ); break;
 
                 // @version
-                case '@version': tagVersion(); break;
+                case '@version': tagVersion(this, filePath, inferid, line ); break;
 
                 // @yields
-                case '@yields': tagYields(); break;
+                case '@yields': tagYields(this, filePath, inferid, line ); break;
 
                 // No tag
-                default: tagNoTag(); break;
+                default: tagNoTag(this, filePath, inferid, line ); break;
 
             }
 
