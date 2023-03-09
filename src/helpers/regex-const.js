@@ -22,7 +22,7 @@ export const REG_INFER_FIX_COMMENTS = /INFER:NL/gmis;
 export const REG_INFER_PARSE_TAG_INFER_LINE = /(@infer)\s{1,}{\({0,1}([^})(]+)\){0,1}}\s{1,}([^\s]+)\s{1,}{\({0,1}([^})(]+)\){0,1}}\s{0,}-{0,1}\s{0,}(.*)?/ims;
 
 // Breaks apart the param line 
-export const REG_INFER_PARSE_TAG_PARAM_LINE = /(@param)\s{1,}{\({0,1}([^}{)(]+)\){0,1}}\s{1,}(?=\[([^\]]+)\]\s{0,}-{0,1}\s{0,}(.*)?|([^\s]+)\s{0,}-{0,1}\s{0,}(.*)?)/ims;
+export const REG_INFER_PARSE_TAG_PARAM_LINE = /@param\s{0,}\{([^}]+)}\s{0,}([^\s]+)\s{0,}-\s{0,}(.*)?|@param\s{0,}\{([^}]+)}\s{0,}(\[{1}.*\]{1})\s{0,}-\s{0,}(.*)?/mis;
 
 // Parse Author
 export const REG_INFER_PARSE_TAG_AUTHOR = /@author\s{1,}([^<]+)\s{1,}<([^>]+)>/ims;

@@ -10,12 +10,13 @@ import {
 /**
  * Fixes the comments and strips asterisks and combines multi line comments.
  * @param {string} jsComment - The js comment to fix.
+ * @param {number} commentLineNumber - The current comment line number.
  * @returns {object} - The parsed lined object.
  */
-export function fixComments(jsComment) {
+export function fixComments(jsComment, commentLineNumber) {
 
     // Variables
-    const obj = { lines: [], desc: '' };
+    const obj = { lines: [], desc: '', lineNumber: commentLineNumber };
 
     // List of tag types that can have multi line comments.
     const multiComments = [
@@ -35,7 +36,7 @@ export function fixComments(jsComment) {
         srcObj.line = src.replace(REG_REMOVE_STARTING_ASTERISK, '').trimStart();
 
         // Get tag
-        srcObj.tag = srcObj.line.split(REG_SPLIT_ON_SPACE, 2)[0];
+        srcObj.tag = srcObj.line.split(REG_SPLIT_ON_SPACE, 2)[0].toLowerCase();
 
         return srcObj;
     }
@@ -50,7 +51,8 @@ export function fixComments(jsComment) {
         const src = {
             raw: '',
             tag: '',
-            line: ''
+            line: '',
+            lineNumber: commentLineNumber + i
         };
 
         // Get the raw line
@@ -58,18 +60,20 @@ export function fixComments(jsComment) {
 
         // Pre Process
         const pre = prep(src.raw);
+        src.line = pre.line;
+        src.tag = pre.tag;
 
         // Check for multi lines
-        if (pre.tag[0] === '@') {
+        if (src.tag[0] === '@') {
 
-            if (multiComments.includes(pre.tag)) {
+            if (multiComments.includes(src.tag)) {
                 for (let ii = (i + 1); ii < lines.length; ii++) {
 
                     const pre2 = prep(lines[ii]);
                     if (pre2.tag[0] !== '@') {
 
                         // Add to 
-                        pre.line += `\n${pre2.line}`;
+                        src.line += `\n${pre2.line}`;
 
                     } else {
 
@@ -81,12 +85,12 @@ export function fixComments(jsComment) {
             }
 
             // Add the tag name
-            obj.lines.push(pre);
+            obj.lines.push(src);
 
         } else {
 
             // Description tag
-            obj.desc += (obj.desc === '') ? pre.line : `\n${pre.line}`;
+            obj.desc += (obj.desc === '') ? src.line : `\n${src.line}`;
 
         }
 

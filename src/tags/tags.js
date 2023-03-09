@@ -48,9 +48,11 @@ export { tagListens } from "./tag-listens.js";
 export { tagMember } from "./tag-member.js";
 export { tagMemberOf } from "./tag-member-of.js";
 export { tagMixes } from "./tag-mixes.js";
+export { tagMixin } from "./tag-mixin.js";
 export { tagModule } from "./tag-module.js";
 export { tagName } from "./tag-name.js";
 export { tagNameSpace } from "./tag-namespace.js";
+export { tagNoTag } from "./tag-no-tag.js";
 export { tagOverride } from "./tag-override.js";
 export { tagPackage} from "./tag-package.js";
 export { tagParam } from "./tag-param.js";
@@ -72,4 +74,5 @@ export { tagTutorial } from "./tag-tutorial.js";
 export { tagType } from "./tag-type.js";
 export { tagTypeDef } from "./tag-type-def.js"
 export { tagVariation } from "./tag-variation.js";
+export { tagVersion } from "./tag-version.js";
 export { tagYields } from "./tag-yields.js";
