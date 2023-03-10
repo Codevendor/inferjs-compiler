@@ -1,8 +1,5 @@
 'use strict';
 
-
-
-
 // Imports
 import {
     ripTypes,
@@ -14,12 +11,15 @@ import {
 const REG_TAG_RETURNS = /@returns{0,1}\s{1,}\{{0,1}([^}{]+)\}{0,1}\s{0,}-{0,1}\s{0,}(.*)?/ims;
 
 /**
- * 
+ * Parses the tag @returns.
  * @param {object} parser - The parser class.
- * @param {string} line - The line to parse.
+ * @param {string} filePath - The filepath of where the line exists.
+ * @param {string} inferid = The inferid for the comment.
+ * @param {object} lineObject - The lineObject to parse.
  */
-export function tagReturns(parser, line, inferid, tag) {
+export function tagReturns(parser, filePath, inferid, lineObject) {
 
+    /*
     let match = line.match(REG_TAG_RETURNS);
     if (!match || match.length !== 3) return;
 
@@ -36,5 +36,5 @@ export function tagReturns(parser, line, inferid, tag) {
     types.map(type => {
         parser.source.infers[inferid][tag]['types'][type] = {};
     });
-
+*/
 }

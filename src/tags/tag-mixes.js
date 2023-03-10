@@ -1,10 +1,12 @@
 'use strict';
 
 /**
- * 
+ * Parses the tag @mixes.
  * @param {object} parser - The parser class.
- * @param {string} line - The line to parse.
+ * @param {string} filePath - The filepath of where the line exists.
+ * @param {string} inferid = The inferid for the comment.
+ * @param {object} lineObject - The lineObject to parse.
  */
-export function tagMixes(parser, line) {
+export function tagMixes(parser, filePath, inferid, lineObject) {
 
 }

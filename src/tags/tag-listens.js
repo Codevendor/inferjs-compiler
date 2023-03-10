@@ -1,10 +1,12 @@
 'use strict';
 
 /**
- * 
+ * Parses the tag @listens.
  * @param {object} parser - The parser class.
- * @param {string} line - The line to parse.
+ * @param {string} filePath - The filepath of where the line exists.
+ * @param {string} inferid = The inferid for the comment.
+ * @param {object} lineObject - The lineObject to parse.
  */
-export function tagListens(parser, line) {
+export function tagListens(parser, filePath, inferid, lineObject) {
 
 }

@@ -69,6 +69,18 @@
                 "--output=./tests/inferobjects/test-comments1.io.js"
             ],
             "env" : { "NODE_ENV" : "production" },
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "TEST: Parser",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/tests/debug.js",
+            "args": [
+            ],
+            "env" : { "NODE_ENV" : "development" },
         }
     ]
 }

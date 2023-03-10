@@ -1,10 +1,12 @@
 'use strict';
 
 /**
- * 
+ * Parses the tag @see.
  * @param {object} parser - The parser class.
- * @param {string} line - The line to parse.
+ * @param {string} filePath - The filepath of where the line exists.
+ * @param {string} inferid = The inferid for the comment.
+ * @param {object} lineObject - The lineObject to parse.
  */
-export function tagSee(parser, line) {
+export function tagSee(parser, filePath, inferid, lineObject) {
 
 }

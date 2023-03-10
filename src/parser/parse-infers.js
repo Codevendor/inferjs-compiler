@@ -344,6 +344,10 @@ export function parseInfers(text) {
 
                 switch (peek()) {
 
+                    case '*':
+                        skipSpace();
+                        break;
+
                     case '-':
 
                         if (first) { 
@@ -366,6 +370,8 @@ export function parseInfers(text) {
                             return desc;
 
                         }
+
+                        desc+=peek();
 
                         break;
 

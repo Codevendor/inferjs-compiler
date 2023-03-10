@@ -60,24 +60,4 @@ export function tagInfer(parser, filePath, inferid, lineObject) {
 
     });
 
-
-
-
-
-    // Set Param Description
-    // setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'description'], description);
-
-    // Set Optional
-    //setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'optional'], optional);
-
-    // Set Default
-    //if (hasDefault) { setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'default'], defaultValue); }
-
-    // Set Types
-    //setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'types'], {});
-    //types.forEach(tname => {
-    //    setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'types', tname], {});
-    //    setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'types', tname, 'expects'], {});
-    //});
-
 }
