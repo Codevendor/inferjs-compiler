@@ -4,6 +4,7 @@
  * @module inferjs-compiler
  */
 
+/*
 // Helper Regex Constants
 export {
     REG_NEWLINES,
@@ -23,6 +24,8 @@ export {
     REG_INFER_PARSE_TAG_YIELDS
 
 } from "./regex-const.js";
+*/
+
 
 // Helper methods
 export { buildInferObject } from "./build-infer-object.js";

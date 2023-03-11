@@ -1,14 +1,9 @@
 'use strict';
 
 // Imports
-import {
-    ripTypes,
-    type_of,
-    REG_INFER_FIX_COMMENTS
-} from "../helpers/helpers.js";
+import { setValue } from "../helpers/set-value.js";
 
-// Parse returns
-const REG_TAG_RETURNS = /@returns{0,1}\s{1,}\{{0,1}([^}{]+)\}{0,1}\s{0,}-{0,1}\s{0,}(.*)?/ims;
+const REG_TAG_RETURNS = /@returns{0,}\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
 
 /**
  * Parses the tag @returns.
@@ -19,22 +14,34 @@ const REG_TAG_RETURNS = /@returns{0,1}\s{1,}\{{0,1}([^}{]+)\}{0,1}\s{0,}-{0,1}\s
  */
 export function tagReturns(parser, filePath, inferid, lineObject) {
 
-    /*
-    let match = line.match(REG_TAG_RETURNS);
-    if (!match || match.length !== 3) return;
+    // Parse Match
+    let match = lineObject.line.match(REG_TAG_RETURNS);
 
-    // Rip the types
-    let types = ripTypes(match[1]);
+    // Must have 3 params
+    if (!match || match.length !== 3) {
 
-    // Get the description
-    let pdesc = (type_of(match[2]) === 'undefined') ? '' : match[2];
+        console.warn()('INFERJS-COMPILER', `Incorrect Syntax for Tag (${lineObject.tag})!\nFile: ${filePath}\nLine: ${lineObject.lineNumber}`);
 
-    parser.source.infers[inferid][tag] = {
-        types: {}, "description": pdesc.replace(REG_INFER_FIX_COMMENTS, "\n")
-    };
+    }
 
-    types.map(type => {
-        parser.source.infers[inferid][tag]['types'][type] = {};
+    // Get types
+    let types = match[1].trim();
+    if (types.startsWith('(') && types.endsWith(')')) {
+        types = types.slice(1, -1).trim();
+    }
+    types = types.split('|').map(item => item.trim());
+
+    // Get description
+    const description = match[2].trim();
+
+    // Set returns object
+    setValue(parser.source, ['methods', 'infers', inferid, '@returns'], {});
+    setValue(parser.source, ['methods', 'infers', inferid, '@returns', 'types'], {});
+
+    // Add Types
+    types.forEach(tname => {
+        setValue(parser.source, ['methods', 'infers', inferid, '@returns', 'types', tname], {});
+        setValue(parser.source, ['methods', 'infers', inferid, '@returns', 'types', tname, 'description'], description);
     });
-*/
+
 }

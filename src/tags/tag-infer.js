@@ -1,6 +1,10 @@
 'use strict';
 
-import { REG_INFER_PARSE_TAG_INFER_LINE, setValue } from "../helpers/helpers.js";
+// Imports
+import { setValue } from "../helpers/set-value.js";
+
+// Breaks apart the infer line into 5 groups.
+export const REG_TAG_INFER = /@infer\s{0,}{([^}]+)}\s{0,}([^\s]+)\s{0,}{([^}]+)}\s{0,}-{0,1}\s{0,}(.*)/ims;
 
 /**
  * Parses the tag @infer
@@ -12,12 +16,12 @@ import { REG_INFER_PARSE_TAG_INFER_LINE, setValue } from "../helpers/helpers.js"
 export function tagInfer(parser, filePath, inferid, lineObject) {
 
     // Parse Match
-    let match = lineObject.line.match(REG_INFER_PARSE_TAG_INFER_LINE);
+    let match = lineObject.line.match(REG_TAG_INFER);
 
     // Must have 7 params
     if (!match || match.length !== 5) {
 
-        console.warn()('INFERJS-COMPILER', `Incorrect Syntax for Tag (@infer)!\nFile: ${filePath}\nLine: ${lineObject.lineNumber}`);
+        console.warn()('INFERJS-COMPILER', `Incorrect Syntax for Tag (${lineObject.tag})!\nFile: ${filePath}\nLine: ${lineObject.lineNumber}`);
 
     }
 

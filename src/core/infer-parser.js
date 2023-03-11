@@ -1,21 +1,14 @@
 import path from "node:path";
 import { COLOR, LABEL } from "curry-console";
 
+// Get js multi line comment tags
+export const REG_JS_COMMENTS = /\/[\*]{2}[^\*]\s{0,}(.*?)\s{0,}\*\//gms;
+
+// Get the @inferid
+export const REG_INFER_ID = /@inferid\s{0,}([^\s]+)/ims;
+
 // Helpers
 import {
-    REG_JS_COMMENTS,
-    REG_INFER_ID,
-    REG_SPLIT_ON_SPACE,
-    REG_INFER_FIX_COMMENTS,
-    REG_INFER_PARSE_TAG_INFER_LINE,
-    REG_INFER_PARSE_TAG_PARAM_LINE,
-    REG_INFER_PARSE_TAG_AUTHOR,
-    REG_INFER_PARSE_TAG_BORROWS,
-    REG_INFER_PARSE_TAG_ENUM,
-    REG_INFER_PARSE_TAG_MEMBER,
-    REG_INFER_PARSE_TAG_TYPE,
-    REG_INFER_PARSE_TAG_TYPEDEF,
-    REG_INFER_PARSE_TAG_YIELDS,
     getLineNumber,
     fixComments,
     type_of,

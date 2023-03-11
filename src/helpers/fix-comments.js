@@ -1,11 +1,13 @@
 'use strict';
 
-// Get helper methods
-import {
-    REG_NEWLINES,
-    REG_REMOVE_STARTING_ASTERISK,
-    REG_SPLIT_ON_SPACE
-} from "../helpers/helpers.js";
+// Matches newline characters
+const REG_NEWLINES = /\r?\n/g;
+
+// Removes starting asterisk if any
+const REG_REMOVE_STARTING_ASTERISK = /^[\s]{0,}[*]{1}[\s]{0,}/mis;
+
+// Split on any space
+const REG_SPLIT_ON_SPACE = /\s/ims;
 
 /**
  * Fixes the comments and strips asterisks and combines multi line comments.

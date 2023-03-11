@@ -1,6 +1,10 @@
 'use strict';
 
-import { REG_INFER_PARSE_TAG_PARAM_LINE, setValue } from "../helpers/helpers.js";
+// Imports
+import { setValue } from "../helpers/set-value.js";
+
+// Breaks apart the param line 
+const REG_TAG_PARAM = /@param\s{0,}{([^}]+)}\s{0,}(\[{1}.*\]{1})\s{0,}-{0,1}\s{0,}(.*)|@param\s{0,}{([^}]+)}\s{0,}([^\[\]\s]+)\s{0,}-{0,}\s{0,}(.*)/mis;
 
 /**
  * Parses the tag @param.
@@ -12,12 +16,12 @@ import { REG_INFER_PARSE_TAG_PARAM_LINE, setValue } from "../helpers/helpers.js"
 export function tagParam(parser, filePath, inferid, lineObject) {
 
     // Parse Match
-    let match = lineObject.line.match(REG_INFER_PARSE_TAG_PARAM_LINE);
+    let match = lineObject.line.match(REG_TAG_PARAM);
 
     // Must have 7 params
     if (!match || match.length !== 7) {
 
-        console.warn()('INFERJS-COMPILER', `Incorrect Syntax for Tag (@param)!\nFile: ${filePath}\nLine: ${lineObject.lineNumber}`);
+        console.warn()('INFERJS-COMPILER', `Incorrect Syntax for Tag (${lineObject.tag})!\nFile: ${filePath}\nLine: ${lineObject.lineNumber}`);
 
     }
 
