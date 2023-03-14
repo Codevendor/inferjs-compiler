@@ -59,7 +59,7 @@ export function tagInfer(parser, commentType, filePath, inferid, lineObject) {
         expects.map(expect => {
 
             // Set Param Name
-            setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'types', tname, 'expects', expect.key], { description: description, value: expect.value }, true);
+            setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'types', tname, 'expects', expect.key], { description: description, value: expect.value }, true);
 
         });
 

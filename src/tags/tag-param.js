@@ -60,22 +60,22 @@ export function tagParam(parser, commentType, filePath, inferid, lineObject) {
     const description = match[3].trim();
 
     // Set Param Name
-    setValue(parser.source, ['methods', 'infers', inferid, '@param', name], {});
+    setValue(parser.source, [commentType, 'infers', inferid, '@param', name], {});
 
     // Set Param Description
-    setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'description'], description);
+    setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'description'], description);
 
     // Set Optional
-    setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'optional'], optional);
+    setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'optional'], optional);
 
     // Set Default
-    if(hasDefault) { setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'default'], defaultValue); }
+    if(hasDefault) { setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'default'], defaultValue); }
 
     // Set Types
-    setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'types'], {});
+    setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'types'], {});
     types.forEach(tname => {
-        setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'types', tname], {});
-        setValue(parser.source, ['methods', 'infers', inferid, '@param', name, 'types', tname, 'expects'], {});
+        setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'types', tname], {});
+        setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'types', tname, 'expects'], {});
     });
 
 }

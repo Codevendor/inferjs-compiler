@@ -36,13 +36,13 @@ export function tagReturns(parser, commentType, filePath, inferid, lineObject) {
     const description = match[2].trim();
 
     // Set returns object
-    setValue(parser.source, ['methods', 'infers', inferid, '@returns'], {});
-    setValue(parser.source, ['methods', 'infers', inferid, '@returns', 'types'], {});
+    setValue(parser.source, [commentType, 'infers', inferid, '@returns'], {});
+    setValue(parser.source, [commentType, 'infers', inferid, '@returns', 'types'], {});
 
     // Add Types
     types.forEach(tname => {
-        setValue(parser.source, ['methods', 'infers', inferid, '@returns', 'types', tname], {});
-        setValue(parser.source, ['methods', 'infers', inferid, '@returns', 'types', tname, 'description'], description);
+        setValue(parser.source, [commentType, 'infers', inferid, '@returns', 'types', tname], {});
+        setValue(parser.source, [commentType, 'infers', inferid, '@returns', 'types', tname, 'description'], description);
     });
 
 }

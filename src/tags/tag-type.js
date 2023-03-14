@@ -36,12 +36,12 @@ export function tagType(parser, commentType, filePath, inferid, lineObject) {
     const description = match[2].trim();
 
     // Set returns object
-    setValue(parser.source, ['variables', 'infers', inferid, 'types'], {});
+    setValue(parser.source, [commentType, 'infers', inferid, 'types'], {});
 
     // Add Types
     types.forEach(tname => {
-        setValue(parser.source, ['variables', 'infers', inferid, 'types', tname], {});
-        setValue(parser.source, ['variables', 'infers', inferid, 'types', tname, 'description'], description);
+        setValue(parser.source, [commentType, 'infers', inferid, 'types', tname], {});
+        setValue(parser.source, [commentType, 'infers', inferid, 'types', tname, 'description'], description);
     });
 
 
