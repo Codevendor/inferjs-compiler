@@ -7,6 +7,9 @@ export const REG_JS_COMMENTS = /\/[\*]{2}[^\*]\s{0,}(.*?)\s{0,}\*\//gms;
 // Get the @inferid
 export const REG_INFER_ID = /@inferid\s{0,}([^\s]+)/ims;
 
+// Get the @type or @const
+export const REG_TYPE_OR_CONST = /@type\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)|@const\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)|@constant\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
+
 // Helpers
 import {
     getLineNumber,
@@ -198,13 +201,13 @@ export class inferParser {
     #parseComment(filePath, fileData, jsComment, outputOptions) {
 
         // Comment type
-        let commentType = 'variables';
+        let commentType = 'methods';
 
         // Get the comment line number
         const commentLineNumber = getLineNumber(fileData, jsComment);
 
         // Parse the @inferid
-        const m = jsComment.match(REG_INFER_ID);
+        let m = jsComment.match(REG_INFER_ID);
         if (!m || m.length !== 2 || m[1].trim() === '') {
             const lineNumber = getLineNumber(fileData, jsComment);
             console.warn()('INFERJS-COMPILER', `JS Comment missing tag @inferid on Line: ${lineNumber}\nFile: ${filePath}\nComment:\n${jsComment}`);
@@ -236,7 +239,11 @@ export class inferParser {
         // Fixup comments
         const comment = fixComments(jsComment, commentLineNumber);
 
-
+        // Check if method or variable comment
+        m = jsComment.match(REG_TYPE_OR_CONST);
+        if(m && m.length > 0) {
+            commentType = 'variables';
+        }
 
         // Build source
         setValue(this.#source, [commentType, 'infers', inferid, 'file'], file);
