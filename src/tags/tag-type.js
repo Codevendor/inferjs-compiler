@@ -8,11 +8,12 @@ const REG_TAG_TYPE = /@type\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
 /**
  * Parses the tag @type.
  * @param {object} parser - The parser class.
+ * @param {string} commentType - The comment type.
  * @param {string} filePath - The filepath of where the line exists.
  * @param {string} inferid = The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
  */
-export function tagType(parser, filePath, inferid, lineObject) {
+export function tagType(parser, commentType, filePath, inferid, lineObject) {
 
     // Parse Match
     let match = lineObject.line.match(REG_TAG_TYPE);

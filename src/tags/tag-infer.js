@@ -9,11 +9,12 @@ export const REG_TAG_INFER = /@infer\s{0,}{([^}]+)}\s{0,}([^\s]+)\s{0,}{([^}]+)}
 /**
  * Parses the tag @infer
  * @param {object} parser - The parser class.
+ * @param {string} commentType - The comment type.
  * @param {string} filePath - The filepath of where the line exists.
  * @param {string} inferid = The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
  */
-export function tagInfer(parser, filePath, inferid, lineObject) {
+export function tagInfer(parser, commentType, filePath, inferid, lineObject) {
 
     // Parse Match
     let match = lineObject.line.match(REG_TAG_INFER);

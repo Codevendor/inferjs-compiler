@@ -9,11 +9,12 @@ const REG_TAG_PARAM = /@param\s{0,}{([^}]+)}\s{0,}(\[{1}.*\]{1})\s{0,}-{0,1}\s{0
 /**
  * Parses the tag @param.
  * @param {object} parser - The parser class.
+ * @param {string} commentType - The comment type.
  * @param {string} filePath - The filepath of where the line exists.
  * @param {string} inferid = The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
  */
-export function tagParam(parser, filePath, inferid, lineObject) {
+export function tagParam(parser, commentType, filePath, inferid, lineObject) {
 
     // Parse Match
     let match = lineObject.line.match(REG_TAG_PARAM);
