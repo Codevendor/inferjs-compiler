@@ -1,13 +1,48 @@
 'use strict';
 
+// Imports
+import { setValue } from "../helpers/set-value.js";
+
+export const REG_TYPE_OR_CONST = /@consta{0,1}n{0,1}t{0,1}\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
+
 /**
  * Parses the tag @constant.
  * @param {object} parser - The parser class.
  * @param {string} commentType - The comment type.
  * @param {string} filePath - The filepath of where the line exists.
- * @param {string} inferid = The inferid for the comment.
+ * @param {string} inferid - The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
  */
 export function tagConstant(parser, commentType, filePath, inferid, lineObject) {
+
+    // Parse Match
+    let match = lineObject.line.match(REG_TYPE_OR_CONST);
+
+    // Must have 3 params
+    if (!match || match.length !== 3) {
+
+        console.warn()('INFERJS-COMPILER', `Incorrect Syntax for Tag (${lineObject.tag})!\nFile: ${filePath}\nLine: ${lineObject.lineNumber}`);
+
+    }
+
+    // Get types
+    let types = match[1].trim();
+    if (types.startsWith('(') && types.endsWith(')')) {
+        types = types.slice(1, -1).trim();
+    }
+    types = types.split('|').map(item => item.trim());
+
+    // Get description
+    const description = match[2].trim();
+
+    // Set returns object
+    setValue(parser.source, [commentType, 'infers', inferid, 'types'], {});
+
+    // Add Types
+    types.forEach(tname => {
+        setValue(parser.source, [commentType, 'infers', inferid, 'types', tname], {});
+        setValue(parser.source, [commentType, 'infers', inferid, 'types', tname, 'constant'], true);
+        setValue(parser.source, [commentType, 'infers', inferid, 'types', tname, 'description'], description);
+    });
 
 }

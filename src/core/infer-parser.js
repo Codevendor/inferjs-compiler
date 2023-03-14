@@ -8,7 +8,7 @@ export const REG_JS_COMMENTS = /\/[\*]{2}[^\*]\s{0,}(.*?)\s{0,}\*\//gms;
 export const REG_INFER_ID = /@inferid\s{0,}([^\s]+)/ims;
 
 // Get the @type or @const
-export const REG_TYPE_OR_CONST = /@type\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)|@const\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)|@constant\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
+export const REG_TYPE_OR_CONST = /@type\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)|@consta{0,1}n{0,1}t{0,1}\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
 
 // Helpers
 import {
