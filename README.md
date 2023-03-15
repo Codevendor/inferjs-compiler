@@ -61,7 +61,7 @@ node <path/to/inferjs-compiler> <cmd> <input> <inputOptions> <outputOptions> -o 
 
 | Action&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Cmd| Description |
 | :-- | :--: | :-- |               
-| [parse-files]()        | [-f]()          | Parses single or multiple **JavaScript** files, looking for **JSDoc** multi-line comments. Parses the **JSDoc** comments into an [**InferObject**][infer-object], that can be outputed to the terminal or specified **output** file. |
+| [parse-files]()        | [-f]()          | Parses single or multiple **JavaScript** files or directories, looking for **JSDoc** multi-line comments. Parses the **JSDoc** comments into an [**InferObject**][infer-object], that can be outputed to the terminal or specified **output** file. |
 
 #### Example - Parse Single Input File to Terminal Output:
 ```sh
@@ -83,38 +83,11 @@ foo@console:~$: inferjs-compiler -f ./path/test1.js ./path/test2.js -o
 foo@console:~$: inferjs-compiler -f ./test1.js ./test2.js -o ./path/infer-object.js 
 ```
 
-
-### InferJS-Compiler: [parse-directories]()
-
-| Action&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Cmd| Description |
-| :-- | :--: | :-- |               
-| [parse-directories]()        | [-d]()          | Parses single or multiple directory paths to **JavaScript** files, looking for **JSDoc** multi-line comments. Parses the **JSDoc** comments into an [**InferObject**][infer-object], that can be outputed to the terminal or specified **output** file. |
-
-#### Example - Parse Single Directory to Terminal Output:
-```sh
-foo@console:~$: inferjs-compiler -d ./path/directory -o  
-```
-
-#### Example - Parse Single Directory to Output File:
-```sh
-foo@console:~$: inferjs-compiler -d ./path/directory -o ./path/infer-object.js
-```
-
-#### Example - Parse Multiple Directories to Terminal Output:
-```sh
-foo@console:~$: inferjs-compiler -d ./path/directory1 ./path/directory2 -o 
-```
-
-#### Example - Parse Multiple Directories to Output File:
-```sh
-foo@console:~$: inferjs-compiler -d ./path/directory1 ./path/directory2 -o ./path/infer-object.js 
-```
-
 ### InferJS-Compiler: [parse-file-list]()
 
 | Action&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Cmd| Description |
 | :-- | :--: | :-- |               
-| [parse-file-list]()        | [-l]()          | Parses a delimited file with **JavaScript** file paths, looking for **JSDoc** multi-line comments per file. Parses the **JSDoc** comments into an [**InferObject**][infer-object], that can be outputed to the terminal or specified **output** file. Delimiter Defaults: to `newline` character. |
+| [parse-file-list]()        | [-l]()          | Parses a delimited file with **JavaScript** file or directory paths, looking for **JSDoc** multi-line comments per file. Parses the **JSDoc** comments into an [**InferObject**][infer-object], that can be outputed to the terminal or specified **output** file. Delimiter Defaults: to `newline` character. |
 
 #### Example - Parse File List to Terminal Output:
 ```sh

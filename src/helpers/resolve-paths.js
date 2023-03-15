@@ -1,17 +1,17 @@
 'use strict';
 
 import path from "node:path";
-import { type_of } from "./type-of.js";
+import { type_of, lstat } from "./helpers.js";
 
 /**
  * Resolves and normalizing all paths in an array.
  * @param {array} pathList The path list to normalize and resolve.
- * @returns {array} An array containing the paths normalized and resolved.
+ * @returns {array} An array of objects containing the paths normalized and resolved and whether isDirectory.
  */
-export function resolvePaths(pathList) {
+export async function resolvePaths(pathList) {
 
     switch (type_of(pathList, true)) {
-        
+
         case 'undefined': return [];
         case 'string':
             pathList = [pathList];
@@ -21,12 +21,23 @@ export function resolvePaths(pathList) {
         default: return [];
     }
 
-    return pathList.map(item => {
-        if (!path.isAbsolute(item)) {
-            return path.normalize(path.resolve(item));
-        } else {
-            return item;
-        }
-    });
+    for (let i = 0; i < pathList.length; i++) {
+
+        // Get path
+        const pathOf = pathList[i];
+
+        // Get path stats
+        const pathStats = await lstat(pathOf);
+
+        if (pathStats.err) throw pathStats.err;
+
+        pathList[i] = {
+            path: (!path.isAbsolute(pathOf)) ? path.normalize(path.resolve(pathOf)) : pathOf,
+            isDirectory: pathStats.stats.isDirectory()
+        };
+
+    }
+
+    return pathList;
 
 }
