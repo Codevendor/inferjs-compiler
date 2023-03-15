@@ -62,11 +62,11 @@ export function type_of(src, extended = false) {
 
                         case 'arguments': return 'arguments';
                         case 'array': return 'array';
-                        case 'error': return (src.constructor.name) ? src.constructor.name : 'error';
+                        case 'error': return (src.constructor && src.constructor.name) ? src.constructor.name : 'error';
                         default:
 
                             // Check if constructor
-                            if (src.constructor.name) {
+                            if (src.constructor && src.constructor.name) {
                                 if(src.constructor.name.toLowerCase() === 'object') return 'object';
                                 return src.constructor.name;
                             } 
