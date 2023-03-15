@@ -10,21 +10,21 @@ import { readFile } from "./read-file.js";
  */
 export async function jsonLoader(file, globalName = '') {
 
-    const results = await readFile(file, 'utf8');
-    
+    const results = await readFile(file, { encoding: 'utf8' });
+
     // Return empty object
-    if(results.err) throw results.err;
+    if (results.err) throw results.err;
 
     let jsonObject = '';
 
     // Try to parse 
-    try{
+    try {
         jsonObject = JSON.parse(results.data);
-    } catch(err) {
+    } catch (err) {
         throw err;
     }
 
-    if(globalName!=='') {
+    if (globalName !== '') {
         global[globalName] = jsonObject;
     } else {
         return jsonObject;
