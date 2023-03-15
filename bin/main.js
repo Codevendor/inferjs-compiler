@@ -72,7 +72,7 @@ export async function main(argv) {
         // Check if help
         if (args.hasOwnProperty('help')) {
 
-            let helpFile = (process.env.hasOwnProperty('LANGUAGE')) ? `help-${process.env['LANGUAGE']}.txt` : `help-en_us.txt`;
+            let helpFile = (process.env.hasOwnProperty('LANGUAGE')) ? `help-${process.env['LANGUAGE'].toLowerCase()}.txt` : `help-en_us.txt`;
             let helpFilePath = path.normalize(path.resolve(meta.__dirname, `../localization/${helpFile}`));
 
             const exists = await fileExists(helpFilePath);
