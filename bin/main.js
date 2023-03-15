@@ -81,7 +81,7 @@ export async function main(argv) {
                 helpFilePath = path.normalize(path.resolve(meta.__dirname, `../localization/${helpFile}`));
             }
 
-            results = await readFile(helpFilePath, 'utf8');
+            results = await readFile(helpFilePath, { encoding: 'utf8' });
 
             if (results.err) throw (results.err);
 
