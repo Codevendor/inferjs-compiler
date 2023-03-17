@@ -14,7 +14,7 @@ const REG_TAG_PARAM = /@param\s{0,}{([^}]+)}\s{0,}(\[{1}.*\]{1})\s{0,}-{0,1}\s{0
  * @param {string} inferid - The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
  */
-export function tagParam(parser, commentType, filePath, inferid, lineObject) {
+export function tagParam(parser, commentType, filePath, inferid, lineObject, name) {
 
     // Must be 'methods' 
     if(commentType==='variables') return;

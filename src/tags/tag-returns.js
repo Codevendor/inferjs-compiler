@@ -13,7 +13,7 @@ const REG_TAG_RETURNS = /@returns{0,}\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
  * @param {string} inferid - The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
  */
-export function tagReturns(parser, commentType, filePath, inferid, lineObject) {
+export function tagReturns(parser, commentType, filePath, inferid, lineObject, name) {
 
     // Must be 'methods' 
     if(commentType==='variables') return;

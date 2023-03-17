@@ -32,6 +32,7 @@ export { buildInferObject } from "./build-infer-object.js";
 export { fileExists } from "./file-exists.js";
 export { fixComments } from "./fix-comments.js";
 export { getLineNumber } from "./get-line-number.js";
+export { getName } from "./get-name.js";
 export { jsonLoader } from "./json-loader.js";
 export { loadMeta } from "./load-meta.js";
 export { lstat } from "./lstat.js";

@@ -8,6 +8,6 @@
  * @param {string} inferid - The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
  */
-export function tagTypeDef(parser, commentType, filePath, inferid, lineObject) {
+export function tagTypeDef(parser, commentType, filePath, inferid, lineObject, name) {
 
 }

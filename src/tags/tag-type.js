@@ -13,7 +13,7 @@ const REG_TAG_TYPE = /@type\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
  * @param {string} inferid - The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
  */
-export function tagType(parser, commentType, filePath, inferid, lineObject) {
+export function tagType(parser, commentType, filePath, inferid, lineObject, name) {
 
     // Parse Match
     let match = lineObject.line.match(REG_TAG_TYPE);

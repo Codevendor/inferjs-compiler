@@ -13,7 +13,7 @@ export const REG_TYPE_OR_CONST = /@consta{0,1}n{0,1}t{0,1}\s{0,}{([^}]+)}\s{0,}-
  * @param {string} inferid - The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
  */
-export function tagConstant(parser, commentType, filePath, inferid, lineObject) {
+export function tagConstant(parser, commentType, filePath, inferid, lineObject, name) {
 
     // Parse Match
     let match = lineObject.line.match(REG_TYPE_OR_CONST);

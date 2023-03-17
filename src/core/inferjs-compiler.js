@@ -151,10 +151,10 @@ export class InferJSCompiler extends inferParser {
 
         }
 
-        console.info()('WRITE-FILE', `Writing output file: ${output[0]} ...`);
+        console.info()('WRITE-FILE', `Writing output file: ${output[0].path} ...`);
 
         // Write file to output file with json
-        const writeResults = await writeFile(output[0], inferObject, outputOptions);
+        const writeResults = await writeFile(output[0].path, inferObject, outputOptions);
 
         // Throw err
         if (!!writeResults.err) throw writeResults.err;

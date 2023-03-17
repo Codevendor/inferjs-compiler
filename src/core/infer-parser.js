@@ -2,13 +2,13 @@ import path from "node:path";
 import { COLOR, LABEL } from "curry-console";
 
 // Get js multi line comment tags
-export const REG_JS_COMMENTS = /\/[\*]{2}[^\*]\s{0,}(.*?)\s{0,}\*\//gms;
+const REG_JS_COMMENTS = /\/[\*]{2}[^\*]\s{0,}(.*?)\s{0,}\*\//gms;
 
 // Get the @inferid
-export const REG_INFER_ID = /@inferid\s{0,}([^\s]+)/ims;
+const REG_INFER_ID = /@inferid\s{0,}([^\s]+)/ims;
 
 // Get the @type or @const
-export const REG_TYPE_OR_CONST = /@type\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)|@consta{0,1}n{0,1}t{0,1}\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
+const REG_TYPE_OR_CONST = /@type\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)|@consta{0,1}n{0,1}t{0,1}\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
 
 // Helpers
 import {
@@ -16,7 +16,8 @@ import {
     fixComments,
     type_of,
     ripTypes,
-    setValue
+    setValue,
+    getName
 } from "../helpers/helpers.js";
 
 // Tags
@@ -185,7 +186,7 @@ export class inferParser {
             }
 
             m.forEach((jsComment, groupIndex) => {
-                if (groupIndex === 1) { this.#parseComment(filePath, fileData, jsComment, outputOptions) };
+                if (groupIndex === 1) { this.#parseComment(filePath, fileData, m[0], jsComment, m.index, outputOptions) };
             });
         }
 
@@ -195,10 +196,12 @@ export class inferParser {
      * Parses a js comment for infers.
      * @param {string} filePath - The file path where the comment was found.
      * @param {string} fileData - The full file data from the file.
+     * @param {string} jsCommentRaw - The js comment raw without being parsed.
      * @param {string} jsComment - The js comment being parsed.
+     * @param {string} jsCommentPos - The index position of the jscomment.
      * @param {object} outputOptions - The output options.
      */
-    #parseComment(filePath, fileData, jsComment, outputOptions) {
+    #parseComment(filePath, fileData, jsCommentRaw, jsComment, jsCommentPos, outputOptions) {
 
         // Comment type
         let commentType = 'methods';
@@ -239,9 +242,12 @@ export class inferParser {
         // Fixup comments
         const comment = fixComments(jsComment, commentLineNumber);
 
+        // Get variable or function name
+        const name = getName(fileData, jsCommentRaw, jsCommentPos);
+
         // Check if method or variable comment
         m = jsComment.match(REG_TYPE_OR_CONST);
-        if(m && m.length > 0) {
+        if (m && m.length > 0) {
             commentType = 'variables';
         }
 
@@ -276,235 +282,235 @@ export class inferParser {
 
                 // @abstract
                 case '@virtual':
-                case '@abstract': tagAbstract(this, commentType, filePath, inferid, line ); break;
+                case '@abstract': tagAbstract(this, commentType, filePath, inferid, line, name); break;
 
                 // @access
-                case '@access': tagAccess(this, commentType, filePath, inferid, line ); break;
+                case '@access': tagAccess(this, commentType, filePath, inferid, line, name); break;
 
                 // @alias
-                case '@alias': tagAlias(this, commentType, filePath, inferid, line ); break;
+                case '@alias': tagAlias(this, commentType, filePath, inferid, line, name); break;
 
                 // @async
-                case '@async': tagAsync(this, commentType, filePath, inferid, line ); break;
+                case '@async': tagAsync(this, commentType, filePath, inferid, line, name); break;
 
                 // @augments
                 case '@extends':
-                case '@augments': tagAugments(this, commentType, filePath, inferid, line ); break;
+                case '@augments': tagAugments(this, commentType, filePath, inferid, line, name); break;
 
                 // @author
-                case '@author': tagAuthor(this, commentType, filePath, inferid, line ); break;
+                case '@author': tagAuthor(this, commentType, filePath, inferid, line, name); break;
 
                 // @borrows
-                case '@borrows': tagBorrows(this, commentType, filePath, inferid, line ); break;
+                case '@borrows': tagBorrows(this, commentType, filePath, inferid, line, name); break;
 
                 // @callback
-                case '@callback': tagCallback(this, commentType, filePath, inferid, line ); break;
+                case '@callback': tagCallback(this, commentType, filePath, inferid, line, name); break;
 
                 // @classdesc
-                case '@classdesc': tagClassDesc(this, commentType, filePath, inferid, line ); break;
+                case '@classdesc': tagClassDesc(this, commentType, filePath, inferid, line, name); break;
 
                 // @class
                 case '@constructor':
-                case '@class': tagClass(this, commentType, filePath, inferid, line ); break;
+                case '@class': tagClass(this, commentType, filePath, inferid, line, name); break;
 
                 // @constant
                 case '@const':
-                case '@constant': tagConstant(this, commentType, filePath, inferid, line ); break;
+                case '@constant': tagConstant(this, commentType, filePath, inferid, line, name); break;
 
                 // @constructs
-                case '@constructs': tagConstructs(this, commentType, filePath, inferid, line ); break;
+                case '@constructs': tagConstructs(this, commentType, filePath, inferid, line, name); break;
 
                 // @copyright
-                case '@copyright': tagCopyright(this, commentType, filePath, inferid, line ); break;
+                case '@copyright': tagCopyright(this, commentType, filePath, inferid, line, name); break;
 
                 // @defaults
                 case '@defaultvalue':
-                case '@default': tagDefault(this, commentType, filePath, inferid, line ); break;
+                case '@default': tagDefault(this, commentType, filePath, inferid, line, name); break;
 
                 // @deprecated
-                case '@deprecated': tagDeprecated(this, commentType, filePath, inferid, line ); break;
+                case '@deprecated': tagDeprecated(this, commentType, filePath, inferid, line, name); break;
 
                 // @description
                 case '@desc':
-                case '@description': tagDescription(this, commentType, filePath, inferid, line ); break;
+                case '@description': tagDescription(this, commentType, filePath, inferid, line, name); break;
 
                 // @enum
-                case '@enum': tagEnum(this, commentType, filePath, inferid, line ); break;
+                case '@enum': tagEnum(this, commentType, filePath, inferid, line, name); break;
 
                 // @event
-                case '@event': tagEvent(this, commentType, filePath, inferid, line ); break;
+                case '@event': tagEvent(this, commentType, filePath, inferid, line, name); break;
 
                 // @example
-                case '@example': tagExample(this, commentType, filePath, inferid, line ); break;
+                case '@example': tagExample(this, commentType, filePath, inferid, line, name); break;
 
                 // @exports
-                case '@exports': tagExports(this, commentType, filePath, inferid, line ); break;
+                case '@exports': tagExports(this, commentType, filePath, inferid, line, name); break;
 
                 // @external
                 case '@host':
-                case '@external': tagExternal(this, commentType, filePath, inferid, line ); break;
+                case '@external': tagExternal(this, commentType, filePath, inferid, line, name); break;
 
                 // @file
                 case '@fileoverview':
                 case '@overview':
-                case '@file': tagFile(this, commentType, filePath, inferid, line ); break;
+                case '@file': tagFile(this, commentType, filePath, inferid, line, name); break;
 
                 // @fires
                 case '@emits':
-                case '@fires': tagFires(this, commentType, filePath, inferid, line ); break;
+                case '@fires': tagFires(this, commentType, filePath, inferid, line, name); break;
 
                 // @function
                 case '@func':
                 case '@method':
-                case '@function': tagFunction(this, commentType, filePath, inferid, line ); break;
+                case '@function': tagFunction(this, commentType, filePath, inferid, line, name); break;
 
                 // @generator
-                case '@generator': tagGenerator(this, commentType, filePath, inferid, line ); break;
+                case '@generator': tagGenerator(this, commentType, filePath, inferid, line, name); break;
 
                 // @global
-                case '@global': tagGlobal(this, commentType, filePath, inferid, line ); break;
+                case '@global': tagGlobal(this, commentType, filePath, inferid, line, name); break;
 
                 // @hideconstructor
-                case '@hideconstructor': tagHideConstructor(this, commentType, filePath, inferid, line ); break;
+                case '@hideconstructor': tagHideConstructor(this, commentType, filePath, inferid, line, name); break;
 
                 // @ignore
-                case '@ignore': tagIgnore(this, commentType, filePath, inferid, line ); break;
+                case '@ignore': tagIgnore(this, commentType, filePath, inferid, line, name); break;
 
                 // @implements
-                case '@implements': tagImplements(this, commentType, filePath, inferid, line ); break;
+                case '@implements': tagImplements(this, commentType, filePath, inferid, line, name); break;
 
                 // @inferid
-                case '@inferid': tagInferId(this, commentType, filePath, inferid, line ); break;
+                case '@inferid': tagInferId(this, commentType, filePath, inferid, line, name); break;
 
                 // @infer
-                case '@infer': tagInfer(this, commentType, filePath, inferid, line ); break;
+                case '@infer': tagInfer(this, commentType, filePath, inferid, line, name); break;
 
                 // @inheritdoc
-                case '@inheritdoc': tagInheritDoc(this, commentType, filePath, inferid, line ); break;
+                case '@inheritdoc': tagInheritDoc(this, commentType, filePath, inferid, line, name); break;
 
                 // @inner
-                case '@inner': tagInner(this, commentType, filePath, inferid, line ); break;
+                case '@inner': tagInner(this, commentType, filePath, inferid, line, name); break;
 
                 // @instance
-                case '@instance': tagInstance(this, commentType, filePath, inferid, line ); break;
+                case '@instance': tagInstance(this, commentType, filePath, inferid, line, name); break;
 
                 // @interface
-                case '@interface': tagInterface(this, commentType, filePath, inferid, line ); break;
+                case '@interface': tagInterface(this, commentType, filePath, inferid, line, name); break;
 
                 // @kind
-                case '@kind': tagKind(this, commentType, filePath, inferid, line ); break;
+                case '@kind': tagKind(this, commentType, filePath, inferid, line, name); break;
 
                 // @lends
-                case '@lends': tagLends(this, commentType, filePath, inferid, line ); break;
+                case '@lends': tagLends(this, commentType, filePath, inferid, line, name); break;
 
                 // @license
-                case '@license': tagLicense(this, commentType, filePath, inferid, line ); break;
+                case '@license': tagLicense(this, commentType, filePath, inferid, line, name); break;
 
                 // @link
-                case '@link': tagLink(this, commentType, filePath, inferid, line ); break;
+                case '@link': tagLink(this, commentType, filePath, inferid, line, name); break;
 
                 // @listens
-                case '@listens': tagListens(this, commentType, filePath, inferid, line ); break;
+                case '@listens': tagListens(this, commentType, filePath, inferid, line, name); break;
 
                 // @memberof
-                case '@memberof': tagMemberOf(this, commentType, filePath, inferid, line ); break;
+                case '@memberof': tagMemberOf(this, commentType, filePath, inferid, line, name); break;
 
                 // @member
                 case '@var':
-                case '@member': tagMember(this, commentType, filePath, inferid, line ); break;
+                case '@member': tagMember(this, commentType, filePath, inferid, line, name); break;
 
                 // @mixes
-                case '@mixes': tagMixes(this, commentType, filePath, inferid, line ); break;
+                case '@mixes': tagMixes(this, commentType, filePath, inferid, line, name); break;
 
                 // @mixin
-                case '@mixin': tagMixin(this, commentType, filePath, inferid, line ); break;
+                case '@mixin': tagMixin(this, commentType, filePath, inferid, line, name); break;
 
                 // @module
-                case '@module': tagModule(this, commentType, filePath, inferid, line ); break;
+                case '@module': tagModule(this, commentType, filePath, inferid, line, name); break;
 
                 // @name
-                case '@name': tagName(this, commentType, filePath, inferid, line ); break;
+                case '@name': tagName(this, commentType, filePath, inferid, line, name); break;
 
                 // @namespace
-                case '@namespace': tagNameSpace(this, commentType, filePath, inferid, line ); break;
+                case '@namespace': tagNameSpace(this, commentType, filePath, inferid, line, name); break;
 
                 // @override
-                case '@override': tagOverride(this, commentType, filePath, inferid, line ); break;
+                case '@override': tagOverride(this, commentType, filePath, inferid, line, name); break;
 
                 // @package
-                case '@package': tagPackage(this, commentType, filePath, inferid, line ); break;
+                case '@package': tagPackage(this, commentType, filePath, inferid, line, name); break;
 
                 // @param
                 case '@arg':
                 case '@argument':
-                case '@param': tagParam(this, commentType, filePath, inferid, line); break;
+                case '@param': tagParam(this, commentType, filePath, inferid, line, name); break;
 
                 // @private
-                case '@private': tagPrivate(this, commentType, filePath, inferid, line ); break;
+                case '@private': tagPrivate(this, commentType, filePath, inferid, line, name); break;
 
                 // @property
                 case '@prop':
-                case '@property': tagProperty(this, commentType, filePath, inferid, line ); break;
+                case '@property': tagProperty(this, commentType, filePath, inferid, line, name); break;
 
                 // @protected
-                case '@protected': tagProtected(this, commentType, filePath, inferid, line ); break;
+                case '@protected': tagProtected(this, commentType, filePath, inferid, line, name); break;
 
                 // @public
-                case '@public': tagPublic(this, commentType, filePath, inferid, line ); break;
+                case '@public': tagPublic(this, commentType, filePath, inferid, line, name); break;
 
                 // @readonly
-                case '@readonly': tagReadOnly(this, commentType, filePath, inferid, line ); break;
+                case '@readonly': tagReadOnly(this, commentType, filePath, inferid, line, name); break;
 
                 // @requires
-                case '@requires': tagRequires(this, commentType, filePath, inferid, line ); break;
+                case '@requires': tagRequires(this, commentType, filePath, inferid, line, name); break;
 
                 // @returns
                 case '@return':
-                case '@returns': tagReturns(this, commentType, filePath, inferid, line ); break;
+                case '@returns': tagReturns(this, commentType, filePath, inferid, line, name); break;
 
                 // @see
-                case '@see': tagSee(this, commentType, filePath, inferid, line ); break;
+                case '@see': tagSee(this, commentType, filePath, inferid, line, name); break;
 
                 // @since
-                case '@since': tagSince(this, commentType, filePath, inferid, line ); break;
+                case '@since': tagSince(this, commentType, filePath, inferid, line, name); break;
 
                 // @static
-                case '@static': tagStatic(this, commentType, filePath, inferid, line ); break;
+                case '@static': tagStatic(this, commentType, filePath, inferid, line, name); break;
 
                 // @summary
-                case '@summary': tagSummary(this, commentType, filePath, inferid, line ); break;
+                case '@summary': tagSummary(this, commentType, filePath, inferid, line, name); break;
 
                 // @this
-                case '@this': tagThis(this, commentType, filePath, inferid, line ); break;
+                case '@this': tagThis(this, commentType, filePath, inferid, line, name); break;
 
                 // @throws
                 case '@exception':
-                case '@throws': tagThrows(this, commentType, filePath, inferid, line ); break;
+                case '@throws': tagThrows(this, commentType, filePath, inferid, line, name); break;
 
                 // @todo
-                case '@todo': tagTodo(this, commentType, filePath, inferid, line ); break;
+                case '@todo': tagTodo(this, commentType, filePath, inferid, line, name); break;
 
                 // @tutorial
-                case '@tutorial': tagTutorial(this, commentType, filePath, inferid, line ); break;
+                case '@tutorial': tagTutorial(this, commentType, filePath, inferid, line, name); break;
 
                 // @typedef
-                case '@typedef': tagTypeDef(this, commentType, filePath, inferid, line ); break;
+                case '@typedef': tagTypeDef(this, commentType, filePath, inferid, line, name); break;
 
                 // @type
-                case '@type': tagType(this, commentType, filePath, inferid, line ); break;
+                case '@type': tagType(this, commentType, filePath, inferid, line, name); break;
 
                 // @variation
-                case '@variation': tagVariation(this, commentType, filePath, inferid, line ); break;
+                case '@variation': tagVariation(this, commentType, filePath, inferid, line, name); break;
 
                 // @version
-                case '@version': tagVersion(this, commentType, filePath, inferid, line ); break;
+                case '@version': tagVersion(this, commentType, filePath, inferid, line, name); break;
 
                 // @yields
                 case '@yield':
-                case '@yields': tagYields(this, commentType, filePath, inferid, line ); break;
+                case '@yields': tagYields(this, commentType, filePath, inferid, line, name); break;
 
                 // No tag
-                default: tagNoTag(this, commentType, filePath, inferid, line ); break;
+                default: tagNoTag(this, commentType, filePath, inferid, line, name); break;
 
             }
 
