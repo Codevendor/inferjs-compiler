@@ -39,7 +39,7 @@ export function tagInfer(parser, commentType, filePath, inferid, lineObject, nam
         types = types.split('|').map(item => item.trim());
 
         // Get name, optional, defaultValue
-        let name = match[2].trim();
+        let name2 = match[2].trim();
 
         // Get expectations
         let expects = match[3].trim();
@@ -63,7 +63,7 @@ export function tagInfer(parser, commentType, filePath, inferid, lineObject, nam
             expects.map(expect => {
 
                 // Set Param Name
-                setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'types', tname, 'expects', expect.key], { description: description, value: expect.value }, true);
+                setValue(parser.source, [commentType, 'infers', inferid, '@param', name2, 'types', tname, 'expects', expect.key], { description: description, value: expect.value }, true);
 
             });
 
@@ -75,7 +75,7 @@ export function tagInfer(parser, commentType, filePath, inferid, lineObject, nam
         let match = lineObject.line.match(REG_TAG_INFER2);
 
         // Must have 7 params
-        if (!match || match.length !== 5) {
+        if (!match || match.length !== 4) {
 
             console.warn()('INFERJS-COMPILER', `Incorrect Syntax for Tag (${lineObject.tag})!\nFile: ${filePath}\nLine: ${lineObject.lineNumber}`);
             return;
@@ -89,10 +89,10 @@ export function tagInfer(parser, commentType, filePath, inferid, lineObject, nam
         types = types.split('|').map(item => item.trim());
 
         // Get name, optional, defaultValue
-        let name = match[2].trim();
+        //let name = match[2].trim();
 
         // Get expectations
-        let expects = match[3].trim();
+        let expects = match[2].trim();
         expects = expects.split('|').map(item => {
 
             // Break apart if =
@@ -105,7 +105,7 @@ export function tagInfer(parser, commentType, filePath, inferid, lineObject, nam
         });
 
         // Get description
-        const description = match[4].trim();
+        const description = match[3].trim();
 
         // Add expects to each type
         types.forEach(tname => {
@@ -113,7 +113,7 @@ export function tagInfer(parser, commentType, filePath, inferid, lineObject, nam
             expects.map(expect => {
 
                 // Set Param Name
-                setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'types', tname, 'expects', expect.key], { description: description, value: expect.value }, true);
+                setValue(parser.source, [commentType, 'infers', inferid, 'types', tname, 'expects', expect.key], { description: description, value: expect.value }, true);
 
             });
 
