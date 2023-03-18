@@ -256,6 +256,7 @@ export class inferParser {
         setValue(this.#source, [commentType, 'infers', inferid, 'line'], commentLineNumber);
         setValue(this.#source, [commentType, 'infers', inferid, 'line-inferid'], lineNumber2);
         setValue(this.#source, [commentType, 'infers', inferid, 'description'], comment.desc);
+        setValue(this.#source, [commentType, 'infers', inferid, 'name'], name);
 
         // Declare loop variables
         let match, dvalue;

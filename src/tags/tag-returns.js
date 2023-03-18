@@ -12,6 +12,7 @@ const REG_TAG_RETURNS = /@returns{0,}\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
  * @param {string} filePath - The filepath of where the line exists.
  * @param {string} inferid - The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
+ * @param {string} name - The name of the variable or function.
  */
 export function tagReturns(parser, commentType, filePath, inferid, lineObject, name) {
 
@@ -25,7 +26,7 @@ export function tagReturns(parser, commentType, filePath, inferid, lineObject, n
     if (!match || match.length !== 3) {
 
         console.warn()('INFERJS-COMPILER', `Incorrect Syntax for Tag (${lineObject.tag})!\nFile: ${filePath}\nLine: ${lineObject.lineNumber}`);
-
+        return;
     }
 
     // Get types

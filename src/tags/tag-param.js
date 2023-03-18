@@ -13,6 +13,7 @@ const REG_TAG_PARAM = /@param\s{0,}{([^}]+)}\s{0,}(\[{1}.*\]{1})\s{0,}-{0,1}\s{0
  * @param {string} filePath - The filepath of where the line exists.
  * @param {string} inferid - The inferid for the comment.
  * @param {object} lineObject - The lineObject to parse.
+ * @param {string} name - The name of the variable or function.
  */
 export function tagParam(parser, commentType, filePath, inferid, lineObject, name) {
 
@@ -26,7 +27,7 @@ export function tagParam(parser, commentType, filePath, inferid, lineObject, nam
     if (!match || match.length !== 7) {
 
         console.warn()('INFERJS-COMPILER', `Incorrect Syntax for Tag (${lineObject.tag})!\nFile: ${filePath}\nLine: ${lineObject.lineNumber}`);
-
+        return;
     }
 
     // Move match from or condition
@@ -43,15 +44,15 @@ export function tagParam(parser, commentType, filePath, inferid, lineObject, nam
     }
     types = types.split('|').map(item => item.trim());
 
-    // Get name, optional, defaultValue
-    let name = match[2].trim();
+    // Get name2, optional, defaultValue
+    let name2 = match[2].trim();
     let optional = false;
-    if(name.startsWith('[') && name.endsWith(']')) {
+    if(name2.startsWith('[') && name2.endsWith(']')) {
         optional = true;
-        name = name.slice(1, -1).trim();
+        name2 = name2.slice(1, -1).trim();
     }
-    const nameParts = name.split('=').map(item => item.trim());
-    name = nameParts[0];
+    const nameParts = name2.split('=').map(item => item.trim());
+    name2 = nameParts[0];
     let defaultValue = undefined;
     let hasDefault = false;
     if(nameParts.length==2) {
@@ -63,22 +64,22 @@ export function tagParam(parser, commentType, filePath, inferid, lineObject, nam
     const description = match[3].trim();
 
     // Set Param Name
-    setValue(parser.source, [commentType, 'infers', inferid, '@param', name], {});
+    setValue(parser.source, [commentType, 'infers', inferid, '@param', name2], {});
 
     // Set Param Description
-    setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'description'], description);
+    setValue(parser.source, [commentType, 'infers', inferid, '@param', name2, 'description'], description);
 
     // Set Optional
-    setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'optional'], optional);
+    setValue(parser.source, [commentType, 'infers', inferid, '@param', name2, 'optional'], optional);
 
     // Set Default
-    if(hasDefault) { setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'default'], defaultValue); }
+    if(hasDefault) { setValue(parser.source, [commentType, 'infers', inferid, '@param', name2, 'default'], defaultValue); }
 
     // Set Types
-    setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'types'], {});
+    setValue(parser.source, [commentType, 'infers', inferid, '@param', name2, 'types'], {});
     types.forEach(tname => {
-        setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'types', tname], {});
-        setValue(parser.source, [commentType, 'infers', inferid, '@param', name, 'types', tname, 'expects'], {});
+        setValue(parser.source, [commentType, 'infers', inferid, '@param', name2, 'types', tname], {});
+        setValue(parser.source, [commentType, 'infers', inferid, '@param', name2, 'types', tname, 'expects'], {});
     });
 
 }
