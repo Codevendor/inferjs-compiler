@@ -20,18 +20,13 @@ DESCRIPTION
 
 ACTIONS
 
-    -d, --parse-directories
-        Parses single or multiple directory paths to JavaScript files, looking for JSDoc 
-        multi-line comments. Parses the JSDoc comments into an InferObject, that can be 
-        outputed to the terminal or specified output file.
-
     -f, --parse-files
-        Parses single or multiple JavaScript files, looking for JSDoc multi-line comments. 
+        Parses single or multiple JavaScript files or directories, looking for JSDoc multi-line comments. 
         Parses the JSDoc comments into an InferObject, that can be outputed to the terminal 
         or specified output file.
 
     -l, --parse-file-list
-        Parses a delimited file with JavaScript file paths, looking for JSDoc multi-line comments 
+        Parses a delimited file with JavaScript file or directory paths, looking for JSDoc multi-line comments 
         per file. Parses the JSDoc comments into an InferObject, that can be outputed to the 
         terminal or specified output file. Delimiter Defaults: to newline character.
 

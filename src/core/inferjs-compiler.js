@@ -23,8 +23,8 @@ export class InferJSCompiler extends inferParser {
     }
 
     /**
-     * Parses an array list of input file paths and outputs an InferObject.
-     * @param {array} input - The array list of file paths to input.
+     * Parses an array list of input file or directory paths and outputs an InferObject.
+     * @param {array} input - The array list of file or directory paths to input.
      * @param {object} inputOptions - The input list options for each input file.
      * @param {string} output - The file path to create the infer file.
      * @param {object} outputOptions - The output file options.
@@ -38,8 +38,33 @@ export class InferJSCompiler extends inferParser {
         if (type_of(outputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseFiles, fourth parameter outputOptions, must be an object!`);
 
         // Resolve and normalize paths
-        input = resolvePaths(input);
-        output = resolvePaths(output);
+        input = await resolvePaths(input);
+        output = await resolvePaths(output);
+
+        // Loop through and get all directory files
+        let files = [];
+        for (let i = 0; i < input.length; i++) {
+
+            const item = input[i];
+
+            if (item.isDirectory) {
+
+                // Recursive build inputs
+                const list = await this.#getDirectoryList(item.path, inputOptions);
+                files.push(item.path);
+                files = files.concat(list);
+
+            } else {
+                files.push(item.path);
+            }
+
+        }
+
+        // Push files back to input array
+        input = files;
+
+        // Resolve directories
+        input = await resolvePaths(input);
 
         // Check for preview mode
         if (this.args.hasOwnProperty('preview')) {
@@ -53,11 +78,19 @@ export class InferJSCompiler extends inferParser {
             const itable = new Table({
                 columns: [
                     { name: "idx", alignment: "right" },
-                    { name: "Input File Path(s)", alignment: "left", maxLen: 20 }
+                    { name: "type", alignment: "right" },
+                    { name: "Input Path(s)", alignment: "left", maxLen: 20 }
                 ]
             });
 
-            input.map((item, idx) => { itable.addRow({ idx: idx, "Input File Path(s)": item }, { color: 'white' }); });
+            input.map((item, idx) => {
+                const row = {
+                    idx: idx,
+                    type: (item.isDirectory) ? 'dir' : 'file',
+                    "Input Path(s)": item.path
+                };
+                return itable.addRow(row, { color: 'white' });
+            });
             itable.printTable();
 
             // Ouput
@@ -66,7 +99,9 @@ export class InferJSCompiler extends inferParser {
                     { name: "Output File Path", alignment: "left", maxLen: 20 }
                 ]
             });
-            [output].map((item) => { otable.addRow({ "Output File Path": item }, { color: 'white' }); });
+            output.map((item) => {
+                return otable.addRow({ "Output File Path": item.path }, { color: 'white' });
+            });
             otable.printTable();
 
             return;
@@ -79,7 +114,11 @@ export class InferJSCompiler extends inferParser {
         // Loop through files and parse
         for (let i = 0; i < input.length; i++) {
 
-            const file = input[i];
+            // Check if folder skip
+            if(input[i].isDirectory) continue;
+
+            // Get file path
+            const file = input[i].path;
 
             console.info()('READ-FILE', `Reading file: ${file} ...`);
 
@@ -112,10 +151,10 @@ export class InferJSCompiler extends inferParser {
 
         }
 
-        console.info()('WRITE-FILE', `Writing output file: ${output[0]} ...`);
+        console.info()('WRITE-FILE', `Writing output file: ${output[0].path} ...`);
 
         // Write file to output file with json
-        const writeResults = await writeFile(output[0], inferObject, outputOptions);
+        const writeResults = await writeFile(output[0].path, inferObject, outputOptions);
 
         // Throw err
         if (!!writeResults.err) throw writeResults.err;
@@ -143,7 +182,7 @@ export class InferJSCompiler extends inferParser {
         input = resolvePaths(input);
         //output = resolvePaths(output);
 
-        if(input.length !== 1) throw new Error(`Input for parse-file-list must provide 1 file list path!`);
+        if (input.length !== 1) throw new Error(`Input for parse-file-list must provide 1 file list path!`);
 
         //console.info()('INFERJS-COMPILER', `Loading inputFileList: ${input} ...`);
 
@@ -157,8 +196,8 @@ export class InferJSCompiler extends inferParser {
         readResults.data = readResults.data.toString();
 
         // Split the file lines and trim each
-        input = readResults.data.split(inputOptions.delimiter).map( item => {
-        
+        input = readResults.data.split(inputOptions.delimiter).map(item => {
+
             item = item.trim();
             if (item.startsWith('"') && item.endsWith('"')) return item.slice(1, -1).trim();
             if (item.startsWith("'") && item.endsWith("'")) return item.slice(1, -1).trim();
@@ -170,35 +209,6 @@ export class InferJSCompiler extends inferParser {
         // Call parseFiles
         await this.parseFiles(input, inputOptions, output, outputOptions);
 
-    }
-
-    /**
-     * Parses a directory(s) looking for infers to process into an InferObject.
-     * @param {array} input - The directory path(s) to parse.
-     * @param {object} inputOptions - The file options for each file.
-     * @param {string} output - Stdout output InferObject string or output file path to create the InferObject in.
-     * @param {string} outputOptions - The output options.
-     */
-    async parseDirectories(input, inputOptions = {}, output, outputOptions = {}) {
-
-        // Check types
-        if (type_of(input, true) !== 'array') throw new TypeError(`Incorrect type for method parseDirectories, first parameter input, must be an array!`);
-        if (type_of(inputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseDirectories, second parameter inputOptions, must be an object!`);
-        if (type_of(output, true) !== 'undefined' && type_of(output, true) !== 'string') throw new TypeError(`Incorrect type for method parseDirectories, third parameter output, must be an string!`);
-        if (type_of(outputOptions, true) !== 'object') throw new TypeError(`Incorrect type for method parseDirectories, fourth parameter outputOptions, must be an object!`);
-
-        // Resolve and normalize paths
-        input = resolvePaths(input);
-
-        let files = [];
-        for (let i = 0; i < input.length; i++) {
-            const dir = input[i];
-            const list = await this.#getDirectoryList(dir, inputOptions);
-            files = files.concat(list);
-        }
-
-        // Call parseFiles
-        await this.parseFiles(files, inputOptions, output, outputOptions);
     }
 
     /**

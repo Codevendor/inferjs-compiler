@@ -1,25 +1,99 @@
 import path from "node:path";
 import { COLOR, LABEL } from "curry-console";
 
+// Get js multi line comment tags
+const REG_JS_COMMENTS = /\/[\*]{2}[^\*]\s{0,}(.*?)\s{0,}\*\//gms;
+
+// Get the @inferid
+const REG_INFER_ID = /@inferid\s{0,}([^\s]+)/ims;
+
+// Get the @type or @const
+const REG_TYPE_OR_CONST = /@type\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)|@consta{0,1}n{0,1}t{0,1}\s{0,}{([^}]+)}\s{0,}-{0,}\s{0,}(.*)/mis;
+
+// Helpers
 import {
-    REG_JS_COMMENTS,
-    REG_REMOVE_STARTING_ASTERISK,
-    REG_INFER_ID,
-    REG_SPLIT_ON_SPACE,
-    REG_INFER_FIX_COMMENTS,
-    REG_INFER_PARSE_TAG_INFER_LINE,
-    REG_INFER_PARSE_TAG_PARAM_LINE,
-    REG_INFER_PARSE_TAG_AUTHOR,
-    REG_INFER_PARSE_TAG_BORROWS,
-    REG_INFER_PARSE_TAG_ENUM,
-    REG_INFER_PARSE_TAG_MEMBER,
-    REG_INFER_PARSE_TAG_RETURNS,
-    REG_INFER_PARSE_TAG_TYPE,
-    REG_INFER_PARSE_TAG_TYPEDEF,
-    REG_INFER_PARSE_TAG_YIELDS,
     getLineNumber,
-    type_of
+    fixComments,
+    type_of,
+    ripTypes,
+    setValue,
+    getName
 } from "../helpers/helpers.js";
+
+// Tags
+import {
+    tagAbstract,
+    tagAccess,
+    tagAlias,
+    tagAsync,
+    tagAugments,
+    tagAuthor,
+    tagBorrows,
+    tagCallback,
+    tagClass,
+    tagClassDesc,
+    tagConstant,
+    tagConstructs,
+    tagCopyright,
+    tagDefault,
+    tagDeprecated,
+    tagDescription,
+    tagEnum,
+    tagEvent,
+    tagExample,
+    tagExports,
+    tagExternal,
+    tagFile,
+    tagFires,
+    tagFunction,
+    tagGenerator,
+    tagGlobal,
+    tagHideConstructor,
+    tagIgnore,
+    tagImplements,
+    tagInfer,
+    tagInferId,
+    tagInheritDoc,
+    tagInner,
+    tagInstance,
+    tagInterface,
+    tagKind,
+    tagLends,
+    tagLicense,
+    tagLink,
+    tagListens,
+    tagMember,
+    tagMemberOf,
+    tagMixes,
+    tagMixin,
+    tagModule,
+    tagName,
+    tagNameSpace,
+    tagNoTag,
+    tagOverride,
+    tagPackage,
+    tagParam,
+    tagPrivate,
+    tagProperty,
+    tagProtected,
+    tagPublic,
+    tagReadOnly,
+    tagRequires,
+    tagReturns,
+    tagSee,
+    tagSince,
+    tagStatic,
+    tagSummary,
+    tagThis,
+    tagThrows,
+    tagTodo,
+    tagTutorial,
+    tagType,
+    tagTypeDef,
+    tagVariation,
+    tagVersion,
+    tagYields
+} from "../tags/tags.js";
 
 /**
  * The inferParser class
@@ -57,6 +131,9 @@ export class inferParser {
     /** Gets the parsed source results. */
     get source() { return this.#source; }
 
+    /** Gets the parsed source results. */
+    set source(value) { this.#source = value; }
+
     /**
      * Constructor for the inferParser.
      * @param {object} args - The processed main arguments object.
@@ -75,8 +152,18 @@ export class inferParser {
 
         // Reset source
         this.#source = {
-            globals: {},
-            infers: {}
+            globals: {
+                compiler: {
+                    name: info.name,
+                    version: info.version
+                }
+            },
+            methods: {
+                infers: {}
+            },
+            variables: {
+                infers: {}
+            }
         };
 
         // Reset Stats
@@ -104,7 +191,7 @@ export class inferParser {
             }
 
             m.forEach((jsComment, groupIndex) => {
-                if (groupIndex === 1) { this.#parseComment(filePath, fileData, jsComment, outputOptions) };
+                if (groupIndex === 1) { this.#parseComment(filePath, fileData, m[0], jsComment, m.index, outputOptions) };
             });
         }
 
@@ -114,13 +201,21 @@ export class inferParser {
      * Parses a js comment for infers.
      * @param {string} filePath - The file path where the comment was found.
      * @param {string} fileData - The full file data from the file.
+     * @param {string} jsCommentRaw - The js comment raw without being parsed.
      * @param {string} jsComment - The js comment being parsed.
+     * @param {string} jsCommentPos - The index position of the jscomment.
      * @param {object} outputOptions - The output options.
      */
-    #parseComment(filePath, fileData, jsComment, outputOptions) {
+    #parseComment(filePath, fileData, jsCommentRaw, jsComment, jsCommentPos, outputOptions) {
+
+        // Comment type
+        let commentType = 'methods';
+
+        // Get the comment line number
+        const commentLineNumber = getLineNumber(fileData, jsComment);
 
         // Parse the @inferid
-        const m = jsComment.match(REG_INFER_ID);
+        let m = jsComment.match(REG_INFER_ID);
         if (!m || m.length !== 2 || m[1].trim() === '') {
             const lineNumber = getLineNumber(fileData, jsComment);
             console.warn()('INFERJS-COMPILER', `JS Comment missing tag @inferid on Line: ${lineNumber}\nFile: ${filePath}\nComment:\n${jsComment}`);
@@ -130,10 +225,10 @@ export class inferParser {
         const inferid = m[1];
 
         // Check if inferid already exists
-        if (this.#source.infers.hasOwnProperty(inferid)) {
+        if (this.#source.methods.infers.hasOwnProperty(inferid)) {
             const lineNumber = getLineNumber(fileData, jsComment) + (getLineNumber(jsComment, m[0]) - 1);
             throw Error(`\nTag @inferid with id (${inferid}), exists in multiple places! Please change to a more unique id.\n` +
-                `-> File: ${this.#source.infers[inferid].file}, Line: ${this.#source.infers[inferid].line}\n` +
+                `-> File: ${this.#source.methods.infers[inferid].file}, Line: ${this.#source.methods.infers[inferid].line}\n` +
                 `-> File: ${filePath}, Line: ${lineNumber}`);
             return;
 
@@ -149,14 +244,27 @@ export class inferParser {
             file = file.pop();
         }
 
-        // Add to infers
-        this.#source.infers[inferid] = { file: file, line: lineNumber2, "@description": "", "@param": {} };
+        // Fixup comments
+        const comment = fixComments(jsComment, commentLineNumber);
 
-        // Split into lines for parsing and remove starting * if one.
-        const lines = jsComment.split("\n").map(item => item.replace(REG_REMOVE_STARTING_ASTERISK, '').trim());
+        // Get variable or function name
+        const name = getName(fileData, jsCommentRaw, jsCommentPos);
+
+        // Check if method or variable comment
+        m = jsComment.match(REG_TYPE_OR_CONST);
+        if (m && m.length > 0) {
+            commentType = 'variables';
+        }
+
+        // Build source
+        setValue(this.#source, [commentType, 'infers', inferid, 'file'], file);
+        setValue(this.#source, [commentType, 'infers', inferid, 'line'], commentLineNumber);
+        setValue(this.#source, [commentType, 'infers', inferid, 'line-inferid'], lineNumber2);
+        setValue(this.#source, [commentType, 'infers', inferid, 'description'], comment.desc);
+        setValue(this.#source, [commentType, 'infers', inferid, 'name'], name);
 
         // Declare loop variables
-        let match, line, line2, rawLine, tag, dvalue;
+        let match, dvalue;
         let tagArr = [];
         let pname = '';
         let types = [];
@@ -164,332 +272,251 @@ export class inferParser {
         let pdesc = '';
 
         // Loop through comment lines for parsing
-        for (let i = 0; i < lines.length; i++) {
+        for (let i = 0; i < comment.lines.length; i++) {
 
             // Reset vars
             match = undefined;
 
-            // Trim every line
-            line = lines[i];
+            // Set line
+            const line = comment.lines[i];
 
-            // For raw line
-            rawLine = line;
-
-            // Parse tag items
-            tagArr = line.split(REG_SPLIT_ON_SPACE, 2);
-            tag = tagArr.shift();
-
-            // Check tag exists
-            if (tag) {
-
-                // Convert tag to lowercase
-                tag = tag.toLowerCase();
-
-                // Check if multiline comment
-                if (tag[0] === '@') {
-
-                    for (let ii = i + 1; ii < lines.length; ii++) {
-
-                        // Trim every line
-                        line2 = lines[ii].trim();
-
-                        // Check if first character is *, remove
-                        if (line2.length > 0 && line2[0] === '*') line2 = line2.slice(1).trimStart();
-
-                        // Check if not a property then has newlines
-                        if (line2[0] !== '@') {
-
-                            // Add special newline tag for replacing later in descriptions.
-                            line += "INFER:NL" + line2;
-
-                        } else {
-
-                            // Forward index
-                            i = ii - 1;
-                            break;
-                        }
-
-                    }
-                }
-
-            }
+            // Set Tag
+            const tag = comment.lines[i].tag;
 
             // Switch tag for parsing parameters
             switch (tag) {
 
-                // Do Nothing
-                case undefined: break;
-
-                case '@inferid':
-
-                    // Set into array
-                    this.#source.infers[inferid][tag] = inferid;
-
-                    break;
-
-
-                case '@author':
-
-                    match = rawLine.match(REG_INFER_PARSE_TAG_AUTHOR);
-                    if (!match || match.length !== 3) throw new SyntaxError();
-                    this.#source.infers[inferid][tag] = { name: match[1], email: match[2] };
-                    break;
-
-                case '@borrows':
-
-                    match = rawLine.match(REG_INFER_PARSE_TAG_BORROWS);
-                    if (!match || match.length !== 3) throw new SyntaxError();
-                    this.#source.infers[inferid][tag] = { path1: match[1], path2: match[2] };
-                    break;
-
-                case '@enum':
-
-                    match = rawLine.match(REG_INFER_PARSE_TAG_ENUM);
-                    if (!match || match.length !== 2) throw new SyntaxError();
-                    this.#source.infers[inferid][tag] = match[1];
-                    break;
-
-                case '@var':
-                case '@member':
-
-                    match = rawLine.match(REG_INFER_PARSE_TAG_MEMBER);
-                    if (!match) throw new SyntaxError();
-                    this.#source.infers[inferid][tag] = { type: (match.length == 2 && match[1]) ? match[1] : '', name: (match.length === 3 && match[2]) ? match[2] : '' };
-                    break;
-
-                case '@abstract':
-                case '@async':
+                // @abstract
                 case '@virtual':
-                case '@generator':
-                case '@global':
-                case '@hideconstructor':
-                case '@ignore':
-                case '@inheritdoc':
-                case '@inner':
-                case '@instance':
-                case '@override':
-                case '@package':
-                case '@private':
-                case '@protected':
-                case '@public':
-                case '@readonly':
-                case '@static':
+                case '@abstract': tagAbstract(this, commentType, filePath, inferid, line, name); break;
 
-                    this.#source.infers[inferid][tag] = true;
-                    break;
+                // @access
+                case '@access': tagAccess(this, commentType, filePath, inferid, line, name); break;
 
+                // @alias
+                case '@alias': tagAlias(this, commentType, filePath, inferid, line, name); break;
 
-                case '@access':
-                case '@alias':
-                case '@arguments':
-                case '@callback':
-                case '@class':
-                case '@constructor':
-                case '@classdesc':
-                case '@constant':
-                case '@constructs':
-                case '@copyright':
-                case '@default':
-                case '@defaultvalue':
-                case '@deprecated':
+                // @async
+                case '@async': tagAsync(this, commentType, filePath, inferid, line, name); break;
+
+                // @augments
                 case '@extends':
-                case '@enum':
-                case '@event':
-                case '@exports':
-                case '@external':
-                case '@host':
-                case '@fires':
-                case '@emits':
+                case '@augments': tagAugments(this, commentType, filePath, inferid, line, name); break;
 
-                case '@category':
-                case '@func':
-                case '@method':
-                case '@function':
-                case '@implements':
-                case '@interface':
-                case '@kind':
-                case '@lends':
-                case '@listens':
-                case '@memberof':
-                case '@memberof!':
-                case '@mixes':
-                case '@mixin':
-                case '@module':
-                case '@name':
-                case '@namespace':
-                case '@requires':
-                case '@see':
-                case '@since':
-                case '@this':
-                case '@variation':
-                case '@version':
+                // @author
+                case '@author': tagAuthor(this, commentType, filePath, inferid, line, name); break;
 
-                    // Set into array
-                    this.#source.infers[inferid][tag] = tagArr.shift().trim();
+                // @borrows
+                case '@borrows': tagBorrows(this, commentType, filePath, inferid, line, name); break;
 
-                    break;
+                // @callback
+                case '@callback': tagCallback(this, commentType, filePath, inferid, line, name); break;
 
-                // Parse @param
-                case '@param':
+                // @classdesc
+                case '@classdesc': tagClassDesc(this, commentType, filePath, inferid, line, name); break;
 
-                    // Parse Match
-                    match = line.match(REG_INFER_PARSE_TAG_PARAM_LINE);
+                // @class
+                case '@constructor':
+                case '@class': tagClass(this, commentType, filePath, inferid, line, name); break;
 
-                    // Must have 7 params
-                    if (!match || match.length !== 7) break;
+                // @constant
+                case '@const':
+                case '@constant': tagConstant(this, commentType, filePath, inferid, line, name); break;
 
-                    // Split types and trim
-                    types = match[2].split('|').map(item => item.trim());
+                // @constructs
+                case '@constructs': tagConstructs(this, commentType, filePath, inferid, line, name); break;
 
-                    // Check match type for param name 
-                    if (match[3]) {
+                // @copyright
+                case '@copyright': tagCopyright(this, commentType, filePath, inferid, line, name); break;
 
-                        // Split from default value
-                        const keyvalue = match[3].split('=').map(item => item.trim());
-                        pname = keyvalue.shift();
-                        dvalue = keyvalue[0];
-                        pdesc = (match[4] && typeof match[4] === 'string') ? match[4].trim() : '';
+                // @defaults
+                case '@defaultvalue':
+                case '@default': tagDefault(this, commentType, filePath, inferid, line, name); break;
 
-                    } else if (match[5]) {
+                // @deprecated
+                case '@deprecated': tagDeprecated(this, commentType, filePath, inferid, line, name); break;
 
-                        pname = match[5].trim();
-                        pdesc = (match[6] && typeof match[6] === 'string') ? match[6].trim() : '';
-
-                    } else {
-                        // None found
-                        break;
-                    }
-
-                    if (!this.#source.infers[inferid]['@param'].hasOwnProperty(pname)) this.#source.infers[inferid]['@param'][pname] = {};
-                    this.#source.infers[inferid]['@param'][pname]['description'] = pdesc.replace(REG_INFER_FIX_COMMENTS, "\n");
-                    if (!this.#source.infers[inferid]['@param'][pname].hasOwnProperty('types')) this.#source.infers[inferid]['@param'][pname]['types'] = {};
-
-                    types.forEach(tname => {
-                        if (!this.#source.infers[inferid]['@param'][pname]['types'].hasOwnProperty(tname)) this.#source.infers[inferid]['@param'][pname]['types'][tname] = { "infers": {} };
-                        this.#source.infers[inferid]['@param'][pname]['types'][tname]['default'] = dvalue;
-                    });
-
-                    break;
-
-                // Parse '@infer'
-                case '@infer':
-
-                    // Parse Match
-                    match = line.match(REG_INFER_PARSE_TAG_INFER_LINE);
-
-                    // Must have 6 params
-                    if (!match || match.length !== 6) break;
-
-                    // Split types and trim
-                    types = match[2].split('|').map(item => item.trim());
-
-                    // Get the param name.
-                    pname = match[3].trim();
-
-                    // Split infers and trim
-                    infers = match[4].split('|').map(item => item.trim());
-
-                    // Get param description
-                    pdesc = (match[5] && typeof match[5] === 'string') ? match[5].trim() : '';
-
-                    if (!this.#source.infers[inferid]['@param'].hasOwnProperty(pname)) this.#source.infers[inferid]['@param'][pname] = {};
-                    if (!this.#source.infers[inferid]['@param'][pname].hasOwnProperty('types')) this.#source.infers[inferid]['@param'][pname]['types'] = {};
-
-                    types.forEach(tname => {
-
-                        if (!this.#source.infers[inferid]['@param'][pname]['types'].hasOwnProperty(tname)) this.#source.infers[inferid]['@param'][pname]['types'][tname] = { "infers": {}, "default": undefined };
-
-                        infers.forEach(infer => {
-
-                            const items = infer.split('=').map(item => item.trim());
-                            infer = items.shift();
-
-                            if (!this.#source.infers[inferid]['@param'][pname]['types'][tname].hasOwnProperty(infer)) this.#source.infers[inferid]['@param'][pname]['types'][tname]['infers'][infer] = {};
-                            if (!this.#source.infers[inferid]['@param'][pname]['types'][tname]['infers'][infer].hasOwnProperty('description')) this.#source.infers[inferid]['@param'][pname]['types'][tname]['infers'][infer]['description'] = pdesc.replace(REG_INFER_FIX_COMMENTS, "\n");
-                            if (!this.#source.infers[inferid]['@param'][pname]['types'][tname]['infers'][infer].hasOwnProperty('value')) this.#source.infers[inferid]['@param'][pname]['types'][tname]['infers'][infer]['value'] = items[0];
-
-                        });
-
-                    });
-
-                    break;
-
-
-                case '@exception':
-                case '@throws':
-                case '@returns':
-
-                    match = line.match(REG_INFER_PARSE_TAG_RETURNS);
-                    if (!match || match.length !== 3) throw new SyntaxError();
-                    this.#source.infers[inferid][tag] = { type: match[1], "description": match[2].replace(REG_INFER_FIX_COMMENTS, "\n") };
-                    break;
-
-                case '@description':
+                // @description
                 case '@desc':
+                case '@description': tagDescription(this, commentType, filePath, inferid, line, name); break;
 
-                    this.#source.infers[inferid]['@description'] = line.replace(REG_INFER_FIX_COMMENTS, "\n").trim();
-                    break;
+                // @enum
+                case '@enum': tagEnum(this, commentType, filePath, inferid, line, name); break;
 
-                case '@todo':
+                // @event
+                case '@event': tagEvent(this, commentType, filePath, inferid, line, name); break;
+
+                // @example
+                case '@example': tagExample(this, commentType, filePath, inferid, line, name); break;
+
+                // @exports
+                case '@exports': tagExports(this, commentType, filePath, inferid, line, name); break;
+
+                // @external
+                case '@host':
+                case '@external': tagExternal(this, commentType, filePath, inferid, line, name); break;
+
+                // @file
                 case '@fileoverview':
                 case '@overview':
-                case '@file':
-                case '@example':
-                case '@license':
-                case '@summary':
+                case '@file': tagFile(this, commentType, filePath, inferid, line, name); break;
 
-                    this.#source.infers[inferid][tag] = line.split(tag, 2)[1].replace(REG_INFER_FIX_COMMENTS, "\n").trim();
-                    break;
+                // @fires
+                case '@emits':
+                case '@fires': tagFires(this, commentType, filePath, inferid, line, name); break;
 
-                case '@tutorial':
+                // @function
+                case '@func':
+                case '@method':
+                case '@function': tagFunction(this, commentType, filePath, inferid, line, name); break;
 
-                    if (!this.#source.infers[inferid].hasOwnProperty(tag)) {
-                        this.#source.infers[inferid][tag] = [];
-                    }
+                // @generator
+                case '@generator': tagGenerator(this, commentType, filePath, inferid, line, name); break;
 
-                    this.#source.infers[inferid][tag].push(tagArr.shift().trim());
-                    break;
+                // @global
+                case '@global': tagGlobal(this, commentType, filePath, inferid, line, name); break;
 
-                case '@type':
+                // @hideconstructor
+                case '@hideconstructor': tagHideConstructor(this, commentType, filePath, inferid, line, name); break;
 
-                    match = line.match(REG_INFER_PARSE_TAG_TYPE);
-                    if (!match || match.length !== 2) throw new SyntaxError();
-                    this.#source.infers[inferid][tag] = match[1].split('|').map(item => item.trim());
-                    break;
+                // @ignore
+                case '@ignore': tagIgnore(this, commentType, filePath, inferid, line, name); break;
 
-                case '@typedef':
+                // @implements
+                case '@implements': tagImplements(this, commentType, filePath, inferid, line, name); break;
 
-                    match = line.match(REG_INFER_PARSE_TAG_TYPEDEF);
-                    if (!match || match.length !== 3) throw new SyntaxError();
-                    this.#source.infers[inferid][tag] = {
-                        type: match[1].split('|').map(item => item.trim()),
-                        name: match[2]
-                    };
-                    break;
+                // @inferid
+                case '@inferid': tagInferId(this, commentType, filePath, inferid, line, name); break;
 
-                case '@yields':
+                // @infer
+                case '@infer': tagInfer(this, commentType, filePath, inferid, line, name); break;
 
-                    match = line.match(REG_INFER_PARSE_TAG_YIELDS);
-                    if (!match || match.length !== 3) throw new SyntaxError();
-                    this.#source.infers[inferid][tag] = {
-                        type: match[1].split('|').map(item => item.trim()),
-                        "description": match[2].replace(REG_INFER_FIX_COMMENTS, "\n")
-                    };
-                    break;
+                // @inheritdoc
+                case '@inheritdoc': tagInheritDoc(this, commentType, filePath, inferid, line, name); break;
 
-                // Parse Description
-                default:
+                // @inner
+                case '@inner': tagInner(this, commentType, filePath, inferid, line, name); break;
 
-                    // Check if tagged unhandled
-                    if (tag[0] === '@') {
-                        this.#source.infers[inferid][tag] = new ReferenceError(`InferCompiler does not know how to process tag (${tag})!`);
-                        break;
-                    }
+                // @instance
+                case '@instance': tagInstance(this, commentType, filePath, inferid, line, name); break;
 
-                    // Method signature
-                    this.#source.infers[inferid]['@description'] += (this.#source.infers[inferid]['@description'].length === 0) ? line : "\n" + line;
+                // @interface
+                case '@interface': tagInterface(this, commentType, filePath, inferid, line, name); break;
 
-                    break;
+                // @kind
+                case '@kind': tagKind(this, commentType, filePath, inferid, line, name); break;
+
+                // @lends
+                case '@lends': tagLends(this, commentType, filePath, inferid, line, name); break;
+
+                // @license
+                case '@license': tagLicense(this, commentType, filePath, inferid, line, name); break;
+
+                // @link
+                case '@link': tagLink(this, commentType, filePath, inferid, line, name); break;
+
+                // @listens
+                case '@listens': tagListens(this, commentType, filePath, inferid, line, name); break;
+
+                // @memberof
+                case '@memberof': tagMemberOf(this, commentType, filePath, inferid, line, name); break;
+
+                // @member
+                case '@var':
+                case '@member': tagMember(this, commentType, filePath, inferid, line, name); break;
+
+                // @mixes
+                case '@mixes': tagMixes(this, commentType, filePath, inferid, line, name); break;
+
+                // @mixin
+                case '@mixin': tagMixin(this, commentType, filePath, inferid, line, name); break;
+
+                // @module
+                case '@module': tagModule(this, commentType, filePath, inferid, line, name); break;
+
+                // @name
+                case '@name': tagName(this, commentType, filePath, inferid, line, name); break;
+
+                // @namespace
+                case '@namespace': tagNameSpace(this, commentType, filePath, inferid, line, name); break;
+
+                // @override
+                case '@override': tagOverride(this, commentType, filePath, inferid, line, name); break;
+
+                // @package
+                case '@package': tagPackage(this, commentType, filePath, inferid, line, name); break;
+
+                // @param
+                case '@arg':
+                case '@argument':
+                case '@param': tagParam(this, commentType, filePath, inferid, line, name); break;
+
+                // @private
+                case '@private': tagPrivate(this, commentType, filePath, inferid, line, name); break;
+
+                // @property
+                case '@prop':
+                case '@property': tagProperty(this, commentType, filePath, inferid, line, name); break;
+
+                // @protected
+                case '@protected': tagProtected(this, commentType, filePath, inferid, line, name); break;
+
+                // @public
+                case '@public': tagPublic(this, commentType, filePath, inferid, line, name); break;
+
+                // @readonly
+                case '@readonly': tagReadOnly(this, commentType, filePath, inferid, line, name); break;
+
+                // @requires
+                case '@requires': tagRequires(this, commentType, filePath, inferid, line, name); break;
+
+                // @returns
+                case '@return':
+                case '@returns': tagReturns(this, commentType, filePath, inferid, line, name); break;
+
+                // @see
+                case '@see': tagSee(this, commentType, filePath, inferid, line, name); break;
+
+                // @since
+                case '@since': tagSince(this, commentType, filePath, inferid, line, name); break;
+
+                // @static
+                case '@static': tagStatic(this, commentType, filePath, inferid, line, name); break;
+
+                // @summary
+                case '@summary': tagSummary(this, commentType, filePath, inferid, line, name); break;
+
+                // @this
+                case '@this': tagThis(this, commentType, filePath, inferid, line, name); break;
+
+                // @throws
+                case '@exception':
+                case '@throws': tagThrows(this, commentType, filePath, inferid, line, name); break;
+
+                // @todo
+                case '@todo': tagTodo(this, commentType, filePath, inferid, line, name); break;
+
+                // @tutorial
+                case '@tutorial': tagTutorial(this, commentType, filePath, inferid, line, name); break;
+
+                // @typedef
+                case '@typedef': tagTypeDef(this, commentType, filePath, inferid, line, name); break;
+
+                // @type
+                case '@type': tagType(this, commentType, filePath, inferid, line, name); break;
+
+                // @variation
+                case '@variation': tagVariation(this, commentType, filePath, inferid, line, name); break;
+
+                // @version
+                case '@version': tagVersion(this, commentType, filePath, inferid, line, name); break;
+
+                // @yields
+                case '@yield':
+                case '@yields': tagYields(this, commentType, filePath, inferid, line, name); break;
+
+                // No tag
+                default: tagNoTag(this, commentType, filePath, inferid, line, name); break;
 
             }
 

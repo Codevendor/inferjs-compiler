@@ -16,7 +16,7 @@ curr.profile = true;
 curr.verbose = true;
 curr.defaultsLog = [];
 curr.defaultsInfo = [LABEL.WHITE, LABEL.BG_BLUE, COLOR.BLUE];
-curr.defaultsWarn = [LABEL.WHITE, LABEL.BG_YELLOW, COLOR.YELLOW];
+curr.defaultsWarn = [LABEL.BLACK, LABEL.BG_YELLOW, COLOR.YELLOW];
 curr.defaultsError = [LABEL.WHITE, LABEL.BG_RED, COLOR.RED];
 
 /**
@@ -36,7 +36,6 @@ export async function main(argv) {
 
         // Actions
         f: { name: 'action', value: 'parse-files' },
-        d: { name: 'action', value: 'parse-directories' },
         l: { name: 'action', value: 'parse-file-list' },
         c: { name: 'action', value: 'combine' },
 
@@ -72,7 +71,7 @@ export async function main(argv) {
         // Check if help
         if (args.hasOwnProperty('help')) {
 
-            let helpFile = (process.env.hasOwnProperty('LANGUAGE')) ? `help-${process.env['LANGUAGE']}.txt` : `help-en_us.txt`;
+            let helpFile = (process.env.hasOwnProperty('LANGUAGE')) ? `help-${process.env['LANGUAGE'].toLowerCase()}.txt` : `help-en_us.txt`;
             let helpFilePath = path.normalize(path.resolve(meta.__dirname, `../localization/${helpFile}`));
 
             const exists = await fileExists(helpFilePath);
@@ -81,7 +80,7 @@ export async function main(argv) {
                 helpFilePath = path.normalize(path.resolve(meta.__dirname, `../localization/${helpFile}`));
             }
 
-            results = await readFile(helpFilePath, 'utf8');
+            results = await readFile(helpFilePath, { encoding: 'utf8' });
 
             if (results.err) throw (results.err);
 
@@ -93,16 +92,18 @@ export async function main(argv) {
 
         switch (args['action'].toLowerCase()) {
 
-            // Parses a single js file
+            // Parses directories or files
             case 'parse-files':
 
                 if (args['input'].length === 0) throw new Error(`Missing required argument: <input> for parse-files`);
 
                 input = args['input'];
 
-                inputOptions = { flag: "r", encoding: "utf8" };
+                inputOptions = { flag: "r", encoding: "utf8", recursive: false, fileExtensions: ["js", "mjs"] };
                 if (args.hasOwnProperty('input-options-flags')) inputOptions['flag'] = args['input-options-flags'];
                 if (args.hasOwnProperty('input-options-encoding')) inputOptions['encoding'] = args['input-options-encoding'];
+                if (args.hasOwnProperty('input-options-recursive')) inputOptions['recursive'] = args['input-options-recursive'];
+                if (args.hasOwnProperty('input-options-file-extensions')) inputOptions['fileExtensions'] = args['input-options-file-extensions'];
 
                 outputOptions = { flag: "wx", module: "script", env: "production" };
                 if (args.hasOwnProperty('output-options-flags')) outputOptions['flag'] = args['output-options-flags'];
@@ -121,35 +122,6 @@ export async function main(argv) {
 
                 break;
 
-            // Parses a directory of file
-            case 'parse-directories':
-
-                if (!args.hasOwnProperty('input')) throw new Error(`Missing required argument: <input> for parse-directories`);
-
-                input = args['input'];
-
-                inputOptions = { flag: "r", encoding: 'utf8', recursive: false, fileExtensions: ["js", "mjs"] };
-                if (args.hasOwnProperty('input-options-flags')) inputOptions['flag'] = args['input-options-flags'];
-                if (args.hasOwnProperty('input-options-recursive')) inputOptions['recursive'] = args['input-options-recursive'];
-                if (args.hasOwnProperty('input-options-file-extensions')) inputOptions['fileExtensions'] = args['input-options-file-extensions'];
-
-                outputOptions = { flag: "wx", module: "script", env: "production" };
-                if (args.hasOwnProperty('output-options-flags')) outputOptions['flag'] = args['output-options-flags'];
-                if (args.hasOwnProperty('output-options-module')) outputOptions['module'] = args['output-options-module'];
-                if (args.hasOwnProperty('output-options-env')) outputOptions['env'] = args['output-options-env'];
-
-                output = (args['output'].length > 0) ? args['output'][0] : undefined;
-
-                // Get class
-                ic = new InferJSCompiler(args);
-
-                // Async Parse file 
-                results = await ic.parseDirectories(input, inputOptions, output, outputOptions).catch((err) => {
-                    throw new Error(`Processing action parse-directories had internal error:\n${err}`);
-                });
-
-                break;
-
             // Parses a file list
             case 'parse-file-list':
 
@@ -158,7 +130,7 @@ export async function main(argv) {
                 // Parse List
                 input = args['input'];
 
-                inputOptions = { flag: "r", encoding: 'utf8', delimiter: "\n" };
+                inputOptions = { flag: "r", encoding: 'utf8', recursive: false, fileExtensions: ["js", "mjs"], delimiter: "\n" };
                 if (args.hasOwnProperty('input-options-flags')) inputOptions['flag'] = args['input-options-flags'];
                 if (args.hasOwnProperty('input-options-recursive')) inputOptions['recursive'] = args['input-options-recursive'];
                 if (args.hasOwnProperty('input-options-file-extensions')) inputOptions['fileExtensions'] = args['input-options-file-extensions'];
