@@ -152,7 +152,12 @@ export class inferParser {
 
         // Reset source
         this.#source = {
-            globals: {},
+            globals: {
+                compiler: {
+                    name: info.name,
+                    version: info.version
+                }
+            },
             methods: {
                 infers: {}
             },
